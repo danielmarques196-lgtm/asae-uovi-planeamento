@@ -461,7 +461,7 @@ body{-webkit-text-size-adjust:100%}
 
   <!-- Formulário nova entrada -->
   <div class="card">
-    <div class="card-title">➕ Adicionar entrada</div>
+    <div class="card-title" data-form-title>➕ Adicionar entrada</div>
     <div class="g2">
       <div class="fg"><label>Data</label><input type="date" id="f-data" onchange="updateFormSelects()"></div>
       <div class="fg"><label>Tipo</label>
@@ -511,8 +511,9 @@ body{-webkit-text-size-adjust:100%}
       <div class="fg"><label>Observações</label><input type="text" id="f-obs"></div>
     </div>
     <div id="form-alert" style="margin-top:8px"></div>
-    <div style="display:flex;gap:6px;margin-top:10px">
-      <button class="btn btn-p" onclick="addR()">+ Adicionar</button>
+    <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
+      <button class="btn btn-p" id="form-add-btn" onclick="addR()">+ Adicionar</button>
+      <button class="btn btn-d" id="form-cancel-edit-btn" onclick="cancelEdit()" style="display:none">✕ Cancelar edição</button>
       <button class="btn" onclick="clrForm()">Limpar</button>
     </div>
   </div>
@@ -727,6 +728,7 @@ function loadState(){
 // ── HISTÓRICO DE ALTERAÇÕES (ANULAR / UNDO) ───────────────────────────────────
 let undoStack=[];
 const UNDO_MAX=50;
+let editingId=null;
 
 // Captura o estado atual ANTES de uma alteração
 function pushUndo(){
@@ -1339,7 +1341,7 @@ function entryHTML(r){
       <td><span class="pill ${TIPO_C[r.tipo]||'p-au'}">${TIPO_L[r.tipo]||r.tipo}</span></td>
       <td style="font-weight:600">${brigade||'—'}</td>
       <td colspan="5" style="color:#A32D2D;font-size:11px">Ausente</td>
-      <td><button class="btn btn-d" style="padding:2px 6px;font-size:10px" onclick="delR(${r.id})">🗑</button></td>
+      <td style="white-space:nowrap"><button class="btn" style="padding:2px 6px;font-size:10px;margin-right:2px" onclick="editR(${r.id})">✏️</button><button class="btn btn-d" style="padding:2px 6px;font-size:10px" onclick="delR(${r.id})">🗑</button></td>
     </tr>`;
   }
   const conflictInsps=getConflictsForRecord(r, dados.filter(x=>x.data===r.data));
@@ -1352,7 +1354,7 @@ function entryHTML(r){
     <td style="color:#555;font-size:11px">${r.materia||'—'}</td>
     <td style="font-size:11px;color:#185FA5;white-space:nowrap">${nppl||'—'}</td>
     <td style="font-size:10px;color:#888">${obs||''}</td>
-    <td><button class="btn btn-d" style="padding:2px 6px;font-size:10px" onclick="delR(${r.id})">🗑</button></td>
+    <td style="white-space:nowrap"><button class="btn" style="padding:2px 6px;font-size:10px;margin-right:2px" onclick="editR(${r.id})">✏️</button><button class="btn btn-d" style="padding:2px 6px;font-size:10px" onclick="delR(${r.id})">🗑</button></td>
   </tr>`;
 }
 
@@ -1425,12 +1427,11 @@ function checkRestricao(nome, local){
 }
 
 function addR(){
-  const ovr={...formOverride}; // snapshot current overrides
+  const ovr={...formOverride};
   const data=document.getElementById('f-data').value;
   const tipo=document.getElementById('f-tipo').value;
   const insps=[...formInsps];
   const i1=insps[0]||'';
-  const i2=insps[1]||'';
   const vt=document.getElementById('f-vt').value;
   const loc=document.getElementById('f-loc').value;
   const mat=document.getElementById('f-mat').value;
@@ -1439,31 +1440,60 @@ function addR(){
   const toe=document.getElementById('f-toe').value;
   const al=document.getElementById('form-alert');
   al.innerHTML='';
-
   if(!data||!insps.length){al.innerHTML='<div class="alert alert-warn">Preenche a data e adiciona pelo menos um inspetor.</div>';return;}
-  // Verificar restrições geográficas
   if(tipo==='operacao'){
-    const loc=document.getElementById('f-loc').value;
+    const locVal=document.getElementById('f-loc').value;
     for(const insp of insps){
-      const restricao=checkRestricao(insp,loc);
-      if(restricao){
-        al.innerHTML=`<div class="alert alert-warn">⚠️ <strong>${restricao.inspetor}</strong> só pode desempenhar funções em <strong>${restricao.label}</strong>. Localidade selecionada: <em>${loc||'nenhuma'}</em>.</div>`;
-        return;
-      }
+      const restricao=checkRestricao(insp,locVal);
+      if(restricao){al.innerHTML=`<div class="alert alert-warn">⚠️ <strong>${restricao.inspetor}</strong> só pode desempenhar funções em <strong>${restricao.label}</strong>. Localidade selecionada: <em>${locVal||'nenhuma'}</em>.</div>`;return;}
     }
   }
-  if(tipo==='ausencia'&&absentOnDate(data).has(i1)){al.innerHTML=`<div class="alert alert-warn">${i1} já está marcado como ausente neste dia.</div>`;return;}
-
+  if(tipo==='ausencia'&&editingId===null&&absentOnDate(data).has(i1)){al.innerHTML=`<div class="alert alert-warn">${i1} já está marcado como ausente neste dia.</div>`;return;}
   pushUndo();
-  const r={id:nextId++,data,semana:'novo',tipo,insps:[...insps],i1:insps[0]||'',i2:insps[1]||'',i3:insps[2]||'',viatura:vt,local:loc,materia:mat,toe,obs,ref,baseOverride:ovr};
-  dados.push(r);
-  al.innerHTML=`<div class="alert alert-info">Entrada adicionada: <strong>${TIPO_L[tipo]}</strong> — ${insps.join(' + ')} — ${loc||data}</div>`;
-  formInsps=[];formOverride={};
-  updateFormSelects();
+  if(editingId!==null){
+    const idx=dados.findIndex(r=>r.id===editingId);
+    if(idx>=0){dados[idx]={...dados[idx],data,tipo,insps:[...insps],i1:insps[0]||'',i2:insps[1]||'',i3:insps[2]||'',viatura:vt,local:loc,materia:mat,toe,obs,ref,baseOverride:ovr};}
+    al.innerHTML=`<div class="alert alert-info">✅ Entrada atualizada: <strong>${TIPO_L[tipo]}</strong> — ${insps.join(' + ')} — ${loc||data}</div>`;
+    cancelEdit();
+  } else {
+    const r={id:nextId++,data,semana:'novo',tipo,insps:[...insps],i1:insps[0]||'',i2:insps[1]||'',i3:insps[2]||'',viatura:vt,local:loc,materia:mat,toe,obs,ref,baseOverride:ovr};
+    dados.push(r);
+    al.innerHTML=`<div class="alert alert-info">Entrada adicionada: <strong>${TIPO_L[tipo]}</strong> — ${insps.join(' + ')} — ${loc||data}</div>`;
+    formInsps=[];formOverride={};updateFormSelects();
+  }
   renderMetrics();renderDaysView();renderCal();renderDist();renderStats();saveState();
   setTimeout(()=>al.innerHTML='',4000);
 }
-
+function editR(id){
+  const r=dados.find(d=>d.id===id);
+  if(!r)return;
+  editingId=id;
+  document.getElementById('f-data').value=r.data;
+  document.getElementById('f-tipo').value=r.tipo;
+  document.getElementById('f-ref').value=r.ref||'';
+  document.getElementById('f-obs').value=r.obs||'';
+  document.getElementById('f-mat').value=r.materia||'';
+  document.getElementById('f-toe').value=r.toe||'';
+  toggleFields();updateFormSelects();
+  formInsps=getInsps(r).slice();formOverride={...(r.baseOverride||{})};
+  renderInspChips();updateOverrideUI();
+  setTimeout(()=>{
+    const vEl=document.getElementById('f-vt');if(vEl)vEl.value=r.viatura||'';
+    const lEl=document.getElementById('f-loc');if(lEl)lEl.value=r.local||'';
+  },80);
+  const t=document.querySelector('.card-title[data-form-title]');if(t)t.textContent='✏️ Editar entrada';
+  const ab=document.getElementById('form-add-btn');if(ab){ab.textContent='💾 Guardar alterações';ab.classList.add('btn-w');ab.classList.remove('btn-p');}
+  const cb=document.getElementById('form-cancel-edit-btn');if(cb)cb.style.display='';
+  document.getElementById('f-data').scrollIntoView({behavior:'smooth',block:'center'});
+  flashMsg('A editar entrada — altera os campos e clica em 💾 Guardar alterações');
+}
+function cancelEdit(){
+  editingId=null;formInsps=[];formOverride={};clrForm();
+  const t=document.querySelector('.card-title[data-form-title]');if(t)t.textContent='➕ Adicionar entrada';
+  const ab=document.getElementById('form-add-btn');if(ab){ab.textContent='+ Adicionar';ab.classList.remove('btn-w');ab.classList.add('btn-p');}
+  const cb=document.getElementById('form-cancel-edit-btn');if(cb)cb.style.display='none';
+}
+function __addR_old(){
 function delR(id){
   pushUndo();
   dados=dados.filter(r=>r.id!==id);
