@@ -1175,6 +1175,7 @@ let weekNotes={};
 let readMode=false;
 let inspFilterActive='';
 let inlineEditId=null;
+let dayAddDate=null;
 
 function escHTML(v){
   return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1397,12 +1398,15 @@ function renderDaysView(){
         <span class="day-meta">${ops.length} ${ops.length===1?'registo':'registos'}</span>
         ${pres.ausentes.size?`<span class="day-warn">⚠ Ausentes: ${[...pres.ausentes].join(', ')}</span>`:''}
         ${conflictDays.has(date)?`<span class="conflict-badge">⚡ Conflito</span>`:''}
+        <button class="btn" style="padding:4px 8px;font-size:11px" onclick="showDayAdd('${date}')" title="Adicionar nova brigada neste dia">+ Brigada</button>
+        <button class="btn btn-w" style="padding:4px 8px;font-size:11px" onclick="autoBrigadasDia('${date}')" title="Criar brigadas aleatórias de 2 inspetores disponíveis">🎲 Aleatório 2</button>
       </div>
       <div class="day-body">
         <table class="plan-table">
           <thead>${colHdr}</thead>
           <tbody>
             ${ops.map(r=>entryHTML(r)).join('')}
+            ${dayAddDate===date?dayAddHTML(date):''}
             ${aus.length?`<tr class="sep-row"><td colspan="8">Ausências</td></tr>${aus.map(r=>entryHTML(r)).join('')}`:''}
           </tbody>
         </table>
@@ -1472,9 +1476,32 @@ function entryEditHTML(r){
       <div><label>Tipo OE</label><select id="ie-toe-${id}">${toeOptions(r.toe||'')}</select></div>
       <div class="inline-edit-actions">
         <button class="btn btn-p" onclick="saveInlineR(${id})">Guardar</button>
+        <button class="btn btn-w" onclick="fillInlineRandomPair(${id})">🎲 2 inspetores</button>
         <button class="btn" onclick="cancelInlineEdit()">Cancelar</button>
       </div>
       <div class="inline-edit-help">Dica: no campo inspetores podes selecionar mais do que um nome. No Mac usa Cmd+clique para adicionar/remover nomes.</div>
+    </div>
+  </td></tr>`;
+}
+
+function dayAddHTML(date){
+  const id='new-'+date;
+  return`<tr class="inline-edit-row"><td colspan="8">
+    <div class="inline-edit-box">
+      <div><label>Inspetores</label><select id="da-insps-${id}" multiple>${inspOptions(date,[],null)}</select></div>
+      <div><label>Viatura</label><select id="da-vt-${id}">${vtOptions('operacao',date,'',null)}</select></div>
+      <div><label>Concelho</label><input id="da-loc-${id}" list="concelhos-dl" placeholder="Seleciona ou escreve"></div>
+      <div><label>Localidade</label><input id="da-localidade-${id}" placeholder="Nome da localidade"></div>
+      <div><label>Matéria</label><input id="da-mat-${id}" placeholder="Matéria"></div>
+      <div><label>NP/PL</label><input id="da-ref-${id}" placeholder="NP/PL"></div>
+      <div style="grid-column:span 2"><label>Observações</label><input id="da-obs-${id}" placeholder="Observações"></div>
+      <div><label>Tipo OE</label><select id="da-toe-${id}">${toeOptions('')}</select></div>
+      <div class="inline-edit-actions">
+        <button class="btn btn-p" onclick="saveDayAdd('${date}')">Guardar brigada</button>
+        <button class="btn btn-w" onclick="fillDayAddRandomPair('${date}')">🎲 2 inspetores</button>
+        <button class="btn" onclick="cancelDayAdd()">Cancelar</button>
+      </div>
+      <div class="inline-edit-help">Seleciona dois inspetores para uma brigada. O botão aleatório escolhe apenas inspetores livres neste dia.</div>
     </div>
   </td></tr>`;
 }
@@ -1512,6 +1539,7 @@ function toeOptions(selected){
 
 function editInlineR(id){
   inlineEditId=id;
+  dayAddDate=null;
   cancelEdit();
   renderDaysView();
 }
@@ -1519,8 +1547,97 @@ function cancelInlineEdit(){
   inlineEditId=null;
   renderDaysView();
 }
+function showDayAdd(date){
+  dayAddDate=date;
+  inlineEditId=null;
+  cancelEdit();
+  renderDaysView();
+}
+function cancelDayAdd(){
+  dayAddDate=null;
+  renderDaysView();
+}
 function selectedInlineInsps(id){
   return Array.from(document.getElementById('ie-insps-'+id).selectedOptions).map(o=>o.value).filter(Boolean);
+}
+function selectedDayAddInsps(id){
+  return Array.from(document.getElementById('da-insps-'+id).selectedOptions).map(o=>o.value).filter(Boolean);
+}
+function shuffleArr(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function availableInspForDate(date,excludeId=null){
+  const used=usedOnDate(date,excludeId);
+  const absent=absentOnDate(date,excludeId);
+  return inspetoresDiarios().filter(n=>!used.has(n)&&!absent.has(n));
+}
+function availableVtForDate(date){
+  const used=usedVtOnDate(date,null);
+  return viaturas.filter(v=>v.estado==='disponivel'&&!used.has(v.display)).map(v=>v.display);
+}
+function fillDayAddRandomPair(date){
+  const id='new-'+date;
+  const opts=shuffleArr(availableInspForDate(date)).slice(0,2);
+  if(opts.length<2){flashMsg('Não há dois inspetores livres neste dia.');return;}
+  const sel=document.getElementById('da-insps-'+id);
+  Array.from(sel.options).forEach(o=>{o.selected=opts.includes(o.value);});
+}
+function fillInlineRandomPair(id){
+  const r=dados.find(d=>d.id===id);
+  if(!r)return;
+  const opts=shuffleArr(availableInspForDate(r.data,id)).slice(0,2);
+  if(opts.length<2){flashMsg('Não há dois inspetores livres neste dia.');return;}
+  const sel=document.getElementById('ie-insps-'+id);
+  Array.from(sel.options).forEach(o=>{o.selected=opts.includes(o.value);});
+}
+function getSemanaForDate(date){
+  return dados.find(r=>r.data===date&&r.semana)?.semana||'novo';
+}
+function autoBrigadasDia(date){
+  const livres=shuffleArr(availableInspForDate(date));
+  if(livres.length<2){flashMsg('Não há inspetores livres suficientes para formar brigadas de 2.');return;}
+  const pairs=[];
+  for(let i=0;i+1<livres.length;i+=2)pairs.push([livres[i],livres[i+1]]);
+  if(!pairs.length)return;
+  pushUndo();
+  const semana=getSemanaForDate(date);
+  pairs.forEach(pair=>{
+    dados.push({
+      id:nextId++,data:date,semana,tipo:'operacao',
+      insps:[...pair],i1:pair[0],i2:pair[1],i3:'',
+      viatura:'',local:'',localidade:'',materia:'',ref:'',obs:'',toe:'',baseOverride:{}
+    });
+  });
+  dayAddDate=null;inlineEditId=null;
+  renderMetrics();renderDaysView();renderCal();renderDist();renderStats();renderHist();saveState();
+  flashMsg(`${pairs.length} brigada${pairs.length===1?'':'s'} de 2 criada${pairs.length===1?'':'s'}.`);
+}
+function saveDayAdd(date){
+  const id='new-'+date;
+  const insps=selectedDayAddInsps(id);
+  if(insps.length!==2){flashMsg('Escolhe exatamente 2 inspetores para a brigada.');return;}
+  const local=document.getElementById('da-loc-'+id).value||'';
+  for(const insp of insps){
+    const restricao=checkRestricao(insp,local);
+    if(restricao){flashMsg(`${restricao.inspetor} só pode desempenhar funções em ${restricao.label}.`);return;}
+  }
+  pushUndo();
+  dados.push({
+    id:nextId++,data:date,semana:getSemanaForDate(date),tipo:'operacao',
+    insps:[...insps],i1:insps[0]||'',i2:insps[1]||'',i3:'',
+    viatura:document.getElementById('da-vt-'+id).value||'',
+    local,localidade:document.getElementById('da-localidade-'+id).value||'',
+    materia:document.getElementById('da-mat-'+id).value||'',
+    ref:document.getElementById('da-ref-'+id).value||'',
+    obs:document.getElementById('da-obs-'+id).value||'',
+    toe:document.getElementById('da-toe-'+id).value||'',
+    baseOverride:{}
+  });
+  dayAddDate=null;
+  renderMetrics();renderDaysView();renderCal();renderDist();renderStats();renderHist();saveState();
+  flashMsg('Brigada adicionada.');
 }
 function saveInlineR(id){
   const r=dados.find(d=>d.id===id);
