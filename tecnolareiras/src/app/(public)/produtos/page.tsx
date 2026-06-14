@@ -1,66 +1,29 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Grid, List } from "lucide-react";
 import { PRODUCT_CATEGORIES } from "@/lib/constants";
+import { PRODUCTS } from "@/lib/products";
 import { ProductCard } from "@/components/cart/product-card";
 
 export const metadata: Metadata = {
-  title: "Produtos | Recuperadores, Salamandras e Lareiras",
+  title: "Produtos | Recuperadores de Calor, Salamandras e Lareiras",
   description:
-    "Explore a nossa gama completa de recuperadores de calor, salamandras a lenha e pellets, lareiras e churrasqueiras das melhores marcas europeias.",
+    "Catálogo completo de recuperadores de calor, salamandras a lenha e pellets, lareiras e churrasqueiras das marcas Fogo Montanha, Solzaima, Metlor, C&A Chama e Chamilar. Venda e instalação em Entroncamento.",
 };
 
-const sampleProducts = [
-  {
-    id: "1", slug: "mcz-suite-comfort-air-12", name: "MCZ Suite Comfort Air 12", category: "Recuperadores de Calor",
-    brand: "MCZ", price: 2890, salePrice: null, image: null, power: "12 kW", fuel: "Pellets", featured: true, new: false
-  },
-  {
-    id: "2", slug: "jotul-f-370-advance", name: "Jøtul F 370 Advance", category: "Salamandras a Lenha",
-    brand: "Jøtul", price: 1890, salePrice: 1590, image: null, power: "8 kW", fuel: "Lenha", featured: true, new: true
-  },
-  {
-    id: "3", slug: "edilkamin-plisse-h-air", name: "Edilkamin Plisse H Air", category: "Salamandras a Pellets",
-    brand: "Edilkamin", price: 3200, salePrice: null, image: null, power: "14 kW", fuel: "Pellets", featured: false, new: false
-  },
-  {
-    id: "4", slug: "piazzetta-p951t", name: "Piazzetta P951T", category: "Recuperadores de Calor",
-    brand: "Piazzetta", price: 4100, salePrice: null, image: null, power: "20 kW", fuel: "Pellets", featured: true, new: false
-  },
-  {
-    id: "5", slug: "romotop-heat-r-45-s", name: "Romotop Heat R 45 S", category: "Recuperadores de Calor",
-    brand: "Romotop", price: 2200, salePrice: null, image: null, power: "10 kW", fuel: "Lenha", featured: false, new: true
-  },
-  {
-    id: "6", slug: "mcz-musa-comfort-air-14", name: "MCZ Musa Comfort Air 14", category: "Salamandras a Pellets",
-    brand: "MCZ", price: 2450, salePrice: 2150, image: null, power: "14 kW", fuel: "Pellets", featured: true, new: false
-  },
-  {
-    id: "7", slug: "jotul-f-162", name: "Jøtul F 162", category: "Salamandras a Lenha",
-    brand: "Jøtul", price: 1290, salePrice: null, image: null, power: "6 kW", fuel: "Lenha", featured: false, new: false
-  },
-  {
-    id: "8", slug: "lareira-suspensa-premium", name: "Lareira Suspensa Premium", category: "Lareiras Suspensas",
-    brand: "Biofire", price: 3800, salePrice: null, image: null, power: "15 kW", fuel: "Lenha", featured: false, new: true
-  },
-  {
-    id: "9", slug: "churrasqueira-inox-premium", name: "Churrasqueira Inox Premium", category: "Churrasqueiras",
-    brand: "Biofire", price: 890, salePrice: 750, image: null, power: null, fuel: "Carvão", featured: false, new: false
-  },
-  {
-    id: "10", slug: "tubagem-simples-200mm", name: "Tubagem Simples 200mm Inox", category: "Tubagens",
-    brand: null, price: 45, salePrice: null, image: null, power: null, fuel: null, featured: false, new: false
-  },
-  {
-    id: "11", slug: "kit-limpeza-recuperador", name: "Kit Limpeza Recuperador de Calor", category: "Produtos de Limpeza",
-    brand: null, price: 29.90, salePrice: null, image: null, power: null, fuel: null, featured: false, new: false
-  },
-  {
-    id: "12", slug: "vedante-ceramico-6mm", name: "Vedante Cerâmico 6mm (metro)", category: "Peças de Substituição",
-    brand: null, price: 8.50, salePrice: null, image: null, power: null, fuel: null, featured: false, new: false
-  },
-];
-
+const allProducts = PRODUCTS.map((p) => ({
+  id: p.id,
+  slug: p.slug,
+  name: p.name,
+  category: p.categoryName,
+  brand: p.brand,
+  price: p.price,
+  salePrice: p.salePrice ?? null,
+  image: null,
+  power: p.power ?? null,
+  fuel: p.fuel ?? null,
+  featured: p.featured ?? false,
+  new: p.new ?? false,
+}));
 
 export default function ProdutosPage() {
   return (
@@ -75,7 +38,8 @@ export default function ProdutosPage() {
           </nav>
           <h1 className="text-4xl font-bold text-white mb-3">Os Nossos Produtos</h1>
           <p className="text-gray-300 max-w-xl">
-            Descubra a nossa vasta gama de equipamentos de aquecimento das melhores marcas europeias.
+            {PRODUCTS.length} produtos das marcas portuguesas de referência — Fogo Montanha, Solzaima,
+            Metlor, C&amp;A Chama e Chamilar. Instalação profissional incluída.
           </p>
         </div>
       </section>
@@ -99,17 +63,44 @@ export default function ProdutosPage() {
                       Todos os produtos
                     </Link>
                   </li>
-                  {PRODUCT_CATEGORIES.map((cat) => (
-                    <li key={cat.slug}>
-                      <Link
-                        href={`/produtos/${cat.slug}`}
-                        className="block px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50 hover:text-[#C8980C] transition-colors"
-                      >
-                        {cat.name}
-                      </Link>
-                    </li>
-                  ))}
+                  {PRODUCT_CATEGORIES.map((cat) => {
+                    const count = PRODUCTS.filter((p) => p.category === cat.slug).length;
+                    if (count === 0) return null;
+                    return (
+                      <li key={cat.slug}>
+                        <Link
+                          href={`/produtos/${cat.slug}`}
+                          className="flex justify-between px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50 hover:text-[#C8980C] transition-colors"
+                        >
+                          <span>{cat.name}</span>
+                          <span className="text-xs text-gray-400">{count}</span>
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
+
+                <div className="mt-6 pt-6 border-t border-gray-100">
+                  <h3 className="font-bold text-sm text-[#111111] uppercase tracking-wider mb-4">
+                    Marcas
+                  </h3>
+                  <ul className="space-y-1">
+                    {["Fogo Montanha", "Solzaima", "Metlor", "C&A Chama", "Chamilar"].map((brand) => {
+                      const count = PRODUCTS.filter((p) => p.brand === brand).length;
+                      return (
+                        <li key={brand}>
+                          <Link
+                            href={`/marcas/${brand.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-")}`}
+                            className="flex justify-between px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50 hover:text-[#C8980C] transition-colors"
+                          >
+                            <span>{brand}</span>
+                            <span className="text-xs text-gray-400">{count}</span>
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
               </div>
             </aside>
 
@@ -118,7 +109,7 @@ export default function ProdutosPage() {
               {/* Controls */}
               <div className="flex items-center justify-between mb-6 bg-white rounded-xl border border-gray-100 p-4">
                 <span className="text-sm text-gray-500">
-                  A mostrar <strong>12</strong> produtos
+                  A mostrar <strong>{allProducts.length}</strong> produtos
                 </span>
                 <div className="flex items-center gap-3">
                   <select className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#C8980C]/50">
@@ -127,20 +118,12 @@ export default function ProdutosPage() {
                     <option>Preço: Decrescente</option>
                     <option>Mais recentes</option>
                   </select>
-                  <div className="flex border border-gray-200 rounded-lg overflow-hidden">
-                    <button className="p-2 bg-[#C8980C] text-white">
-                      <Grid size={16} />
-                    </button>
-                    <button className="p-2 text-gray-400 hover:bg-gray-50">
-                      <List size={16} />
-                    </button>
-                  </div>
                 </div>
               </div>
 
               {/* Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-                {sampleProducts.map((product) => (
+                {allProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
