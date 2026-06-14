@@ -250,21 +250,37 @@ table{width:100%}
 
 /* ── PRINT ── */
 @media print {
-  body{background:#fff!important;font-size:11px!important}
+  html,body{width:210mm;height:297mm;overflow:hidden}
+  body{background:#fff!important;font-size:9px!important}
   .topbar,.nav,#sec-cal,#sec-dist,#sec-hist,#sec-stats,#sec-bo,
   button:not(.no-hide),.insp-add-row,.sep-semreg,
-  #form-card,.alert,#ai-panel,.week-notes-bar{display:none!important}
+  #form-card,.alert,#ai-panel,.week-notes-bar,.g3{display:none!important}
+  .content{max-width:none!important;width:198mm!important;margin:0!important;padding:0!important}
   .section{display:block!important}
-  #sec-plan{display:block!important}
+  #sec-plan{display:block!important;width:198mm!important;transform:scale(var(--print-scale,0.74));transform-origin:top left}
+  #sec-plan>*:not(#print-hdr):not(.print-card){display:none!important}
   .print-card{display:block!important;box-shadow:none!important;border:none!important;padding:0!important}
-  .day-block{page-break-inside:avoid;margin-bottom:10px;border:1px solid #ccc;border-radius:4px}
+  .day-block{break-inside:avoid;page-break-inside:avoid;margin-bottom:3px;border:1px solid #ccc;border-radius:3px}
+  .day-body{overflow:visible!important}
+  .day-hdr{padding:3px 6px!important;min-height:0}
   .day-hdr{background:#1B3A5C!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .plan-table{font-size:10px!important}
-  .plan-table thead th{background:#e8edf2!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:9px!important}
+  .day-hdr .day-label{font-size:8px!important}
+  .day-hdr .day-meta,.day-hdr .day-warn{font-size:7px!important}
+  .plan-table{font-size:6.8px!important;table-layout:fixed;min-width:0!important}
+  .plan-table thead th{background:#e8edf2!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:6px!important;padding:2px 3px!important;letter-spacing:0!important}
+  .plan-table tbody td{padding:2px 3px!important;line-height:1.15!important}
+  .plan-table th:nth-child(1),.plan-table td:nth-child(1){width:16mm}
+  .plan-table th:nth-child(2),.plan-table td:nth-child(2){width:32mm}
+  .plan-table th:nth-child(3),.plan-table td:nth-child(3){width:22mm}
+  .plan-table th:nth-child(4),.plan-table td:nth-child(4){width:24mm}
+  .plan-table th:nth-child(6),.plan-table td:nth-child(6){width:16mm;white-space:normal!important}
+  .plan-table th:last-child,.plan-table td:last-child{display:none!important}
+  .plan-table tr.sep-row td{display:table-cell!important;padding:1px 4px!important;font-size:6px!important}
+  .pill{font-size:6.5px!important;padding:1px 4px!important;border-radius:8px}
   .pill{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .btn.btn-d{display:none!important}
   .print-header{display:block!important}
-  @page{size:A4 landscape;margin:10mm 8mm}
+  @page{size:A4 portrait;margin:6mm}
 }
 .print-header{display:none}
 
@@ -2534,6 +2550,14 @@ function printPlano(){
     }
   });
 
+  const daysView=document.getElementById('days-view');
+  const dayCount=daysView?daysView.querySelectorAll('.day-block').length:5;
+  const rowCount=daysView?daysView.querySelectorAll('.plan-table tbody tr').length:0;
+  const baseHeight=90+(dayCount*18)+(rowCount*14);
+  const printableHeightPx=1077; // A4 portrait with 6mm margins at CSS 96dpi.
+  const scale=Math.max(0.48,Math.min(0.86,printableHeightPx/baseHeight));
+  document.documentElement.style.setProperty('--print-scale',scale.toFixed(3));
+
   window.print();
 
   // Clean up after print dialog closes
@@ -2541,6 +2565,7 @@ function printPlano(){
     const h=document.getElementById('print-hdr');
     if(h)h.remove();
     document.querySelectorAll('.print-card').forEach(el=>el.classList.remove('print-card'));
+    document.documentElement.style.removeProperty('--print-scale');
   }, 1000);
 }
 
