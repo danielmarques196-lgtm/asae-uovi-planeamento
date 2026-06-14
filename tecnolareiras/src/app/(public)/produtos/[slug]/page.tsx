@@ -1,88 +1,90 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Heart, Download, CheckCircle, Star, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/utils";
 import { AddToCartButton } from "@/components/cart/add-to-cart-button";
-
-const productSlugs = [
-  "mcz-suite-comfort-air-12", "jotul-f-370-advance", "edilkamin-plisse-h-air",
-  "piazzetta-p951t", "romotop-heat-r-45-s", "mcz-musa-comfort-air-14",
-  "jotul-f-162", "lareira-suspensa-premium", "churrasqueira-inox-premium",
-  "tubagem-simples-200mm", "kit-limpeza-recuperador", "vedante-ceramico-6mm",
-];
+import { PRODUCTS, getProductBySlug } from "@/lib/products";
 
 export function generateStaticParams() {
-  return productSlugs.map((slug) => ({ slug }));
+  return PRODUCTS.map((product) => ({ slug: product.slug }));
 }
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
-// Sample product data (in production this would come from DB)
-const sampleProduct = {
-  name: "MCZ Suite Comfort Air 12",
-  slug: "mcz-suite-comfort-air-12",
-  brand: "MCZ",
-  category: "Salamandras a Pellets",
-  price: 2890,
-  salePrice: null,
-  sku: "MCZ-SUITE-CA12",
-  power: "12 kW",
-  efficiency: "93%",
-  fuel: "Pellets",
-  weight: "98 kg",
-  dimensions: "49 × 36,5 × 113,5 cm",
-  energyLabel: "A++",
-  description: `A MCZ Suite Comfort Air 12 é uma salamandra a pellets de design contemporâneo e
-    desempenho excecional. Com uma potência de 12 kW e eficiência de 93%, é a escolha ideal para
-    aquecer espaços de médio a grande dimensão. O sistema Comfort Air permite a distribuição
-    uniforme do calor através de ventilação forçada inteligente.`,
-  features: [
-    "Sistema Comfort Air para distribuição uniforme do calor",
-    "Ecrã LCD com controlo de temperatura",
-    "Compatível com controlo remoto e smartphone",
-    "Auto-ignição e auto-limpeza do queimador",
-    "Depósito de pellets de grande capacidade (30 kg)",
-    "Vidro panorâmico auto-limpante",
-    "Baixas emissões de CO2",
-    "Certificação CE e ErP 2022",
-  ],
-  specs: [
-    { key: "Potência Nominal", value: "12 kW" },
-    { key: "Potência Mínima", value: "3,2 kW" },
-    { key: "Eficiência", value: "93%" },
-    { key: "Classe Energética", value: "A++" },
-    { key: "Combustível", value: "Pellets 6mm" },
-    { key: "Depósito", value: "30 kg" },
-    { key: "Consumo Máx.", value: "2,7 kg/h" },
-    { key: "Peso", value: "98 kg" },
-    { key: "Dimensões (L×P×A)", value: "49 × 36,5 × 113,5 cm" },
-    { key: "Saída de Gases", value: "Ø 80mm" },
-    { key: "Temperatura Máx. Gases", value: "180°C" },
-    { key: "Alimentação", value: "230V / 50Hz" },
-  ],
-};
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  // In production, fetch product by slug
-  void slug;
+  const product = getProductBySlug(slug);
+
+  if (!product) {
+    return {
+      title: "Produto não encontrado | Tecnolareiras",
+    };
+  }
+
+  const descriptionPreview = product.shortDescription;
+
   return {
-    title: `${sampleProduct.name} | Tecnolareiras`,
-    description: `${sampleProduct.name} - ${sampleProduct.fuel} ${sampleProduct.power}. ${sampleProduct.description.substring(0, 150)}...`,
+    title: `${product.name} | Tecnolareiras`,
+    description: `${product.name} — ${product.fuel ?? ""} ${product.power ?? ""}. ${descriptionPreview}`,
+    openGraph: {
+      title: `${product.name} | Tecnolareiras`,
+      description: descriptionPreview,
+      type: "website",
+    },
+    keywords: product.tags?.join(", "),
   };
 }
 
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
-  // In production, fetch product by slug
-  void slug;
+  const product = getProductBySlug(slug);
+
+  if (!product) {
+    notFound();
+  }
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.shortDescription,
+    sku: product.sku,
+    brand: {
+      "@type": "Brand",
+      name: product.brand,
+    },
+    offers: {
+      "@type": "Offer",
+      price: product.salePrice ?? product.price,
+      priceCurrency: "EUR",
+      availability: "https://schema.org/InStock",
+      seller: {
+        "@type": "Organization",
+        name: "Tecnolareiras",
+      },
+    },
+    ...(product.energyLabel && {
+      additionalProperty: {
+        "@type": "PropertyValue",
+        name: "Classe Energética",
+        value: product.energyLabel,
+      },
+    }),
+  };
 
   return (
     <>
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* Breadcrumb */}
       <div className="bg-gray-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-3">
@@ -91,11 +93,14 @@ export default async function ProductPage({ params }: Props) {
             <ChevronRight size={14} />
             <Link href="/produtos" className="hover:text-[#C8980C]">Produtos</Link>
             <ChevronRight size={14} />
-            <Link href="/produtos/salamandras-a-pellets" className="hover:text-[#C8980C]">
-              {sampleProduct.category}
+            <Link
+              href={`/produtos/${product.category}`}
+              className="hover:text-[#C8980C]"
+            >
+              {product.categoryName}
             </Link>
             <ChevronRight size={14} />
-            <span className="text-[#111111] truncate">{sampleProduct.name}</span>
+            <span className="text-[#111111] truncate">{product.name}</span>
           </nav>
         </div>
       </div>
@@ -126,18 +131,22 @@ export default async function ProductPage({ params }: Props) {
               <div className="flex items-start justify-between mb-2">
                 <div>
                   <Link
-                    href={`/marcas/${sampleProduct.brand.toLowerCase()}`}
+                    href={`/marcas/${product.brand.toLowerCase().replace(/[^a-z0-9]/g, "-")}`}
                     className="text-sm text-[#C8980C] font-semibold hover:underline"
                   >
-                    {sampleProduct.brand}
+                    {product.brand}
                   </Link>
                 </div>
                 <Badge variant="success">Em Stock</Badge>
               </div>
 
               <h1 className="text-2xl md:text-3xl font-bold text-[#111111] mb-3">
-                {sampleProduct.name}
+                {product.name}
               </h1>
+
+              {product.new && (
+                <Badge variant="accent" className="mb-3">Novidade</Badge>
+              )}
 
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex gap-0.5">
@@ -145,16 +154,18 @@ export default async function ProductPage({ params }: Props) {
                     <Star key={i} size={14} className="text-[#C8980C] fill-[#C8980C]" />
                   ))}
                 </div>
-                <span className="text-sm text-gray-400">(24 avaliações)</span>
+                <span className="text-sm text-gray-400">(avaliações verificadas)</span>
               </div>
 
               {/* Quick specs */}
               <div className="flex flex-wrap gap-2 mb-5">
-                <Badge variant="secondary">{sampleProduct.power}</Badge>
-                <Badge variant="secondary">{sampleProduct.fuel}</Badge>
-                <Badge variant="secondary">Eficiência {sampleProduct.efficiency}</Badge>
-                {sampleProduct.energyLabel && (
-                  <Badge variant="accent">Classe {sampleProduct.energyLabel}</Badge>
+                {product.power && <Badge variant="secondary">{product.power}</Badge>}
+                {product.fuel && <Badge variant="secondary">{product.fuel}</Badge>}
+                {product.efficiency && (
+                  <Badge variant="secondary">Eficiência {product.efficiency}</Badge>
+                )}
+                {product.energyLabel && (
+                  <Badge variant="accent">Classe {product.energyLabel}</Badge>
                 )}
               </div>
 
@@ -162,11 +173,11 @@ export default async function ProductPage({ params }: Props) {
               <div className="bg-gray-50 rounded-xl p-5 mb-6">
                 <div className="flex items-baseline gap-3">
                   <span className="text-3xl font-bold text-[#111111]">
-                    {formatPrice(sampleProduct.salePrice ?? sampleProduct.price)}
+                    {formatPrice(product.salePrice ?? product.price)}
                   </span>
-                  {sampleProduct.salePrice !== null && (
+                  {product.salePrice !== undefined && (
                     <span className="text-lg text-gray-400 line-through">
-                      {formatPrice(sampleProduct.price)}
+                      {formatPrice(product.price)}
                     </span>
                   )}
                 </div>
@@ -175,20 +186,20 @@ export default async function ProductPage({ params }: Props) {
 
               {/* Short description */}
               <p className="text-gray-600 text-sm leading-relaxed mb-6">
-                {sampleProduct.description}
+                {product.description}
               </p>
 
               {/* SKU */}
-              <p className="text-xs text-gray-400 mb-6">Ref: {sampleProduct.sku}</p>
+              <p className="text-xs text-gray-400 mb-6">Ref: {product.sku}</p>
 
               {/* Actions */}
               <div className="flex flex-col sm:flex-row gap-3 mb-6">
                 <AddToCartButton
                   product={{
-                    id: sampleProduct.sku,
-                    name: sampleProduct.name,
-                    price: sampleProduct.salePrice ?? sampleProduct.price,
-                    slug: sampleProduct.slug,
+                    id: product.sku,
+                    name: product.name,
+                    price: product.salePrice ?? product.price,
+                    slug: product.slug,
                   }}
                 />
                 <Button variant="outline" size="lg" asChild>
@@ -241,7 +252,7 @@ export default async function ProductPage({ params }: Props) {
             {/* Features tab */}
             <div className="p-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {sampleProduct.features.map((feature) => (
+                {product.features.map((feature) => (
                   <div key={feature} className="flex items-start gap-2.5">
                     <CheckCircle size={16} className="text-[#C8980C] mt-0.5 shrink-0" />
                     <span className="text-sm text-gray-600">{feature}</span>
@@ -254,7 +265,7 @@ export default async function ProductPage({ params }: Props) {
             <div className="border-t border-gray-50 p-8">
               <h3 className="font-bold text-[#111111] mb-4">Especificações Técnicas</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border border-gray-100 rounded-xl overflow-hidden">
-                {sampleProduct.specs.map((spec, i) => (
+                {product.specs.map((spec, i) => (
                   <div
                     key={spec.key}
                     className={`flex justify-between px-4 py-3 ${
