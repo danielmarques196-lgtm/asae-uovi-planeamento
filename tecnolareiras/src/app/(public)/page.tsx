@@ -89,20 +89,20 @@ export default function HomePage() {
         {/* Background gradient effect */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-br from-[#111111] via-[#1a1a1a] to-[#0a0a0a]" />
-          <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#D97706]/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-[#D97706]/5 rounded-full blur-3xl" />
+          <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#C8980C]/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-[#C8980C]/5 rounded-full blur-3xl" />
         </div>
 
         <div className="relative max-w-7xl mx-auto px-6 py-24">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 bg-[#D97706]/10 border border-[#D97706]/20 rounded-full px-4 py-1.5 text-[#D97706] text-sm font-medium mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#D97706] animate-pulse" />
+            <div className="inline-flex items-center gap-2 bg-[#C8980C]/10 border border-[#C8980C]/20 rounded-full px-4 py-1.5 text-[#C8980C] text-sm font-medium mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C8980C] animate-pulse" />
               Especialistas em Aquecimento a Biomassa
             </div>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">
               Calor e Conforto{" "}
-              <span className="text-[#D97706]">para a sua Casa</span>
+              <span className="text-[#C8980C]">para a sua Casa</span>
             </h1>
 
             <p className="text-xl text-gray-300 mb-8 leading-relaxed max-w-2xl">
@@ -129,7 +129,7 @@ export default function HomePage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 border-t border-white/10">
               {stats.map((stat) => (
                 <div key={stat.label}>
-                  <div className="text-3xl font-bold text-[#D97706]">{stat.value}</div>
+                  <div className="text-3xl font-bold text-[#C8980C]">{stat.value}</div>
                   <div className="text-sm text-gray-400 mt-1">{stat.label}</div>
                 </div>
               ))}
@@ -161,12 +161,12 @@ export default function HomePage() {
               <Link
                 key={cat.slug}
                 href={`/produtos/${cat.slug}`}
-                className="group flex flex-col items-center gap-3 p-5 rounded-xl border border-gray-100 hover:border-[#D97706] hover:shadow-lg transition-all duration-300 bg-white"
+                className="group flex flex-col items-center gap-3 p-5 rounded-xl border border-gray-100 hover:border-[#C8980C] hover:shadow-lg transition-all duration-300 bg-white"
               >
-                <div className="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center text-2xl group-hover:bg-[#D97706]/10 transition-colors">
+                <div className="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center text-2xl group-hover:bg-[#C8980C]/10 transition-colors">
                   {categoryIcons[cat.slug]}
                 </div>
-                <span className="text-sm font-medium text-center text-gray-700 group-hover:text-[#D97706] transition-colors leading-tight">
+                <span className="text-sm font-medium text-center text-gray-700 group-hover:text-[#C8980C] transition-colors leading-tight">
                   {cat.name}
                 </span>
               </Link>
@@ -193,10 +193,10 @@ export default function HomePage() {
               return (
                 <div
                   key={feature.title}
-                  className="bg-white rounded-xl p-6 border border-gray-100 hover:border-[#D97706]/30 hover:shadow-md transition-all duration-300"
+                  className="bg-white rounded-xl p-6 border border-gray-100 hover:border-[#C8980C]/30 hover:shadow-md transition-all duration-300"
                 >
-                  <div className="w-11 h-11 bg-[#D97706]/10 rounded-xl flex items-center justify-center mb-4">
-                    <Icon size={22} className="text-[#D97706]" />
+                  <div className="w-11 h-11 bg-[#C8980C]/10 rounded-xl flex items-center justify-center mb-4">
+                    <Icon size={22} className="text-[#C8980C]" />
                   </div>
                   <h3 className="font-bold text-[#111111] mb-2">{feature.title}</h3>
                   <p className="text-sm text-gray-500 leading-relaxed">{feature.description}</p>
@@ -224,9 +224,9 @@ export default function HomePage() {
               <Link
                 key={brand.slug}
                 href={`/marcas/${brand.slug}`}
-                className="group flex items-center justify-center p-6 rounded-xl border border-gray-100 hover:border-[#D97706] hover:shadow-md transition-all duration-300 bg-white"
+                className="group flex items-center justify-center p-6 rounded-xl border border-gray-100 hover:border-[#C8980C] hover:shadow-md transition-all duration-300 bg-white"
               >
-                <span className="text-lg font-bold text-gray-400 group-hover:text-[#D97706] transition-colors">
+                <span className="text-lg font-bold text-gray-400 group-hover:text-[#C8980C] transition-colors">
                   {brand.name}
                 </span>
               </Link>
@@ -248,7 +248,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 bg-[#D97706]/10 border border-[#D97706]/20 rounded-full px-4 py-1.5 text-[#D97706] text-sm font-medium mb-6">
+              <div className="inline-flex items-center gap-2 bg-[#C8980C]/10 border border-[#C8980C]/20 rounded-full px-4 py-1.5 text-[#C8980C] text-sm font-medium mb-6">
                 <Wrench size={14} />
                 Serviços Profissionais
               </div>
@@ -269,7 +269,7 @@ export default function HomePage() {
                   "Vistoria e certificação",
                 ].map((item) => (
                   <li key={item} className="flex items-center gap-3 text-gray-300">
-                    <CheckCircle size={16} className="text-[#D97706] shrink-0" />
+                    <CheckCircle size={16} className="text-[#C8980C] shrink-0" />
                     {item}
                   </li>
                 ))}
@@ -297,7 +297,7 @@ export default function HomePage() {
                     key={item.label}
                     className="bg-white/5 border border-white/10 rounded-xl p-6 text-center"
                   >
-                    <Icon size={28} className="text-[#D97706] mx-auto mb-3" />
+                    <Icon size={28} className="text-[#C8980C] mx-auto mb-3" />
                     <div className="text-2xl font-bold text-white mb-1">{item.value}</div>
                     <div className="text-xs text-gray-400">{item.label}</div>
                   </div>
@@ -325,14 +325,14 @@ export default function HomePage() {
               >
                 <div className="flex gap-1 mb-4">
                   {Array.from({ length: t.rating }).map((_, i) => (
-                    <Star key={i} size={14} className="text-[#D97706] fill-[#D97706]" />
+                    <Star key={i} size={14} className="text-[#C8980C] fill-[#C8980C]" />
                   ))}
                 </div>
                 <p className="text-gray-600 text-sm leading-relaxed mb-4 italic">
                   &ldquo;{t.text}&rdquo;
                 </p>
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-[#D97706]/10 rounded-full flex items-center justify-center text-[#D97706] font-bold text-sm">
+                  <div className="w-9 h-9 bg-[#C8980C]/10 rounded-full flex items-center justify-center text-[#C8980C] font-bold text-sm">
                     {t.name[0]}
                   </div>
                   <div>

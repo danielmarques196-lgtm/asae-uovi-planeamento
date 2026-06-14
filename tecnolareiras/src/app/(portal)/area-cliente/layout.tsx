@@ -22,9 +22,10 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
       <header className="bg-[#111111] text-white">
         <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-[#D97706] rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xs">TL</span>
-            </div>
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 flex-shrink-0">
+              <circle cx="20" cy="20" r="20" fill="#CC3300"/>
+              <text x="20" y="26" textAnchor="middle" fill="white" fontSize="14" fontWeight="800" fontFamily="Arial, sans-serif">TL</text>
+            </svg>
             <span className="font-bold">Tecnolareiras</span>
             <span className="text-gray-400 text-sm ml-2">· Área de Cliente</span>
           </Link>
@@ -47,7 +48,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="flex items-center gap-3 px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-[#D97706] transition-colors border-b border-gray-50 last:border-0"
+                  className="flex items-center gap-3 px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-[#C8980C] transition-colors border-b border-gray-50 last:border-0"
                 >
                   <Icon size={16} />
                   {item.label}

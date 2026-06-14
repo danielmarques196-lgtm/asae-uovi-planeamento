@@ -14,7 +14,7 @@ export default function ContactosPage() {
       <section className="bg-[#111111] py-16">
         <div className="max-w-7xl mx-auto px-6">
           <nav className="text-sm text-gray-400 mb-4">
-            <Link href="/" className="hover:text-[#D97706]">Início</Link>
+            <Link href="/" className="hover:text-[#C8980C]">Início</Link>
             <span className="mx-2">/</span>
             <span className="text-white">Contactos</span>
           </nav>
@@ -39,8 +39,8 @@ export default function ContactosPage() {
                 const Icon = item.icon;
                 return (
                   <div key={item.label} className="bg-white rounded-xl border border-gray-100 p-5 flex gap-4">
-                    <div className="w-10 h-10 bg-[#D97706]/10 rounded-xl flex items-center justify-center shrink-0">
-                      <Icon size={18} className="text-[#D97706]" />
+                    <div className="w-10 h-10 bg-[#C8980C]/10 rounded-xl flex items-center justify-center shrink-0">
+                      <Icon size={18} className="text-[#C8980C]" />
                     </div>
                     <div>
                       <div className="text-xs text-gray-400 uppercase tracking-wider">{item.label}</div>

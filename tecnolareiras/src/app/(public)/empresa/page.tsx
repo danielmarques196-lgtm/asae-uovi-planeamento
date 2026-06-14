@@ -41,7 +41,7 @@ export default function EmpresaPage() {
       <section className="bg-[#111111] py-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="max-w-2xl">
-            <p className="text-[#D97706] text-sm font-semibold uppercase tracking-wider mb-3">
+            <p className="text-[#C8980C] text-sm font-semibold uppercase tracking-wider mb-3">
               A Nossa Empresa
             </p>
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
@@ -91,7 +91,7 @@ export default function EmpresaPage() {
                   key={stat.label}
                   className="bg-gray-50 rounded-xl p-6 text-center border border-gray-100"
                 >
-                  <div className="text-3xl font-bold text-[#D97706] mb-2">{stat.value}</div>
+                  <div className="text-3xl font-bold text-[#C8980C] mb-2">{stat.value}</div>
                   <div className="text-sm text-gray-500">{stat.label}</div>
                 </div>
               ))}
@@ -112,10 +112,10 @@ export default function EmpresaPage() {
               return (
                 <div
                   key={value.title}
-                  className="bg-white rounded-xl p-6 border border-gray-100 hover:border-[#D97706]/30 hover:shadow-md transition-all"
+                  className="bg-white rounded-xl p-6 border border-gray-100 hover:border-[#C8980C]/30 hover:shadow-md transition-all"
                 >
-                  <div className="w-11 h-11 bg-[#D97706]/10 rounded-xl flex items-center justify-center mb-4">
-                    <Icon size={22} className="text-[#D97706]" />
+                  <div className="w-11 h-11 bg-[#C8980C]/10 rounded-xl flex items-center justify-center mb-4">
+                    <Icon size={22} className="text-[#C8980C]" />
                   </div>
                   <h3 className="font-bold text-[#111111] mb-2">{value.title}</h3>
                   <p className="text-sm text-gray-500 leading-relaxed">{value.description}</p>

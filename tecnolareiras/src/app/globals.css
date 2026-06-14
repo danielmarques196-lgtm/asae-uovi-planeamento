@@ -3,8 +3,8 @@
 @theme {
   --color-primary: #111111;
   --color-secondary: #2A2A2A;
-  --color-accent: #D97706;
-  --color-accent-light: #F59E0B;
+  --color-accent: #C8980C;
+  --color-accent-light: #E8B020;
   --font-inter: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -13,7 +13,7 @@
   --foreground: #111111;
   --border: #e5e7eb;
   --muted: #6b7280;
-  --accent: #D97706;
+  --accent: #C8980C;
 }
 
 * {
@@ -42,6 +42,6 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #D97706;
+  background: #C8980C;
   border-radius: 3px;
 }

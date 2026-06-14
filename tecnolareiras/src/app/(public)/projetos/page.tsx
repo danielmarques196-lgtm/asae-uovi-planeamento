@@ -76,7 +76,7 @@ export default function ProjetosPage() {
       <section className="bg-[#111111] py-16">
         <div className="max-w-7xl mx-auto px-6">
           <nav className="text-sm text-gray-400 mb-4">
-            <Link href="/" className="hover:text-[#D97706]">Início</Link>
+            <Link href="/" className="hover:text-[#C8980C]">Início</Link>
             <span className="mx-2">/</span>
             <span className="text-white">Projetos</span>
           </nav>
@@ -93,19 +93,19 @@ export default function ProjetosPage() {
             {projects.map((project) => (
               <div
                 key={project.id}
-                className="bg-white rounded-xl border border-gray-100 hover:border-[#D97706] hover:shadow-lg transition-all overflow-hidden group"
+                className="bg-white rounded-xl border border-gray-100 hover:border-[#C8980C] hover:shadow-lg transition-all overflow-hidden group"
               >
                 <div className="aspect-video bg-gray-50 flex items-center justify-center">
                   <span className="text-6xl">{project.emoji}</span>
                 </div>
                 <div className="p-5">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-[#D97706] font-medium">{project.category}</span>
+                    <span className="text-xs text-[#C8980C] font-medium">{project.category}</span>
                     <div className="flex items-center gap-1 text-xs text-gray-400">
                       <MapPin size={11} /> {project.location}
                     </div>
                   </div>
-                  <h3 className="font-bold text-[#111111] mb-2 group-hover:text-[#D97706] transition-colors">
+                  <h3 className="font-bold text-[#111111] mb-2 group-hover:text-[#C8980C] transition-colors">
                     {project.title}
                   </h3>
                   <p className="text-xs text-gray-500 leading-relaxed mb-3">{project.description}</p>
@@ -122,7 +122,7 @@ export default function ProjetosPage() {
             <p className="text-gray-500 text-sm mb-6">Contacte-nos para uma consulta gratuita.</p>
             <Link
               href="/pedir-orcamento"
-              className="inline-flex items-center gap-2 bg-[#D97706] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#B45309] transition-colors"
+              className="inline-flex items-center gap-2 bg-[#C8980C] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#B45309] transition-colors"
             >
               Pedir Orçamento
             </Link>

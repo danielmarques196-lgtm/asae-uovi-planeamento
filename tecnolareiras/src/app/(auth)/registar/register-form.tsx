@@ -114,14 +114,14 @@ export function RegisterForm() {
         <input
           id="acceptTerms"
           type="checkbox"
-          className="mt-1 accent-[#D97706]"
+          className="mt-1 accent-[#C8980C]"
           {...register("acceptTerms")}
         />
         <label htmlFor="acceptTerms" className="text-sm text-gray-600">
           Li e aceito os{" "}
-          <Link href="/termos" className="text-[#D97706] hover:underline">Termos e Condições</Link>
+          <Link href="/termos" className="text-[#C8980C] hover:underline">Termos e Condições</Link>
           {" "}e a{" "}
-          <Link href="/privacidade" className="text-[#D97706] hover:underline">Política de Privacidade</Link>
+          <Link href="/privacidade" className="text-[#C8980C] hover:underline">Política de Privacidade</Link>
         </label>
       </div>
       {errors.acceptTerms && <p className="text-red-500 text-xs">{errors.acceptTerms.message}</p>}

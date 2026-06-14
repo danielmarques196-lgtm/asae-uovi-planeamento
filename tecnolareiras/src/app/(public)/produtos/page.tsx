@@ -71,7 +71,7 @@ function ProductCard({ product }: { product: typeof sampleProducts[0] }) {
   return (
     <Link
       href={`/produtos/${product.slug}`}
-      className="group bg-white rounded-xl border border-gray-100 hover:border-[#D97706] hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col"
+      className="group bg-white rounded-xl border border-gray-100 hover:border-[#C8980C] hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col"
     >
       {/* Image */}
       <div className="aspect-square bg-gray-50 relative flex items-center justify-center overflow-hidden">
@@ -93,7 +93,7 @@ function ProductCard({ product }: { product: typeof sampleProducts[0] }) {
       {/* Content */}
       <div className="p-4 flex flex-col flex-1">
         <div className="text-xs text-gray-400 mb-1">{product.brand || product.category}</div>
-        <h3 className="font-semibold text-sm text-[#111111] mb-2 line-clamp-2 group-hover:text-[#D97706] transition-colors leading-tight">
+        <h3 className="font-semibold text-sm text-[#111111] mb-2 line-clamp-2 group-hover:text-[#C8980C] transition-colors leading-tight">
           {product.name}
         </h3>
 
@@ -107,14 +107,14 @@ function ProductCard({ product }: { product: typeof sampleProducts[0] }) {
           <div>
             {hasDiscount ? (
               <div>
-                <span className="text-[#D97706] font-bold">{formatPrice(product.salePrice)}</span>
+                <span className="text-[#C8980C] font-bold">{formatPrice(product.salePrice)}</span>
                 <span className="text-gray-400 text-xs line-through ml-1">{formatPrice(product.price)}</span>
               </div>
             ) : (
               <span className="text-[#111111] font-bold">{formatPrice(product.price)}</span>
             )}
           </div>
-          <div className="text-xs text-gray-400 group-hover:text-[#D97706] transition-colors">
+          <div className="text-xs text-gray-400 group-hover:text-[#C8980C] transition-colors">
             Ver →
           </div>
         </div>
@@ -130,7 +130,7 @@ export default function ProdutosPage() {
       <section className="bg-[#111111] py-16">
         <div className="max-w-7xl mx-auto px-6">
           <nav className="text-sm text-gray-400 mb-4">
-            <Link href="/" className="hover:text-[#D97706]">Início</Link>
+            <Link href="/" className="hover:text-[#C8980C]">Início</Link>
             <span className="mx-2">/</span>
             <span className="text-white">Produtos</span>
           </nav>
@@ -155,7 +155,7 @@ export default function ProdutosPage() {
                   <li>
                     <Link
                       href="/produtos"
-                      className="block px-3 py-2 rounded-lg text-sm font-medium bg-[#D97706] text-white"
+                      className="block px-3 py-2 rounded-lg text-sm font-medium bg-[#C8980C] text-white"
                     >
                       Todos os produtos
                     </Link>
@@ -164,7 +164,7 @@ export default function ProdutosPage() {
                     <li key={cat.slug}>
                       <Link
                         href={`/produtos/${cat.slug}`}
-                        className="block px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50 hover:text-[#D97706] transition-colors"
+                        className="block px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50 hover:text-[#C8980C] transition-colors"
                       >
                         {cat.name}
                       </Link>
@@ -182,14 +182,14 @@ export default function ProdutosPage() {
                   A mostrar <strong>12</strong> produtos
                 </span>
                 <div className="flex items-center gap-3">
-                  <select className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#D97706]/50">
+                  <select className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#C8980C]/50">
                     <option>Ordenar: Destaque</option>
                     <option>Preço: Crescente</option>
                     <option>Preço: Decrescente</option>
                     <option>Mais recentes</option>
                   </select>
                   <div className="flex border border-gray-200 rounded-lg overflow-hidden">
-                    <button className="p-2 bg-[#D97706] text-white">
+                    <button className="p-2 bg-[#C8980C] text-white">
                       <Grid size={16} />
                     </button>
                     <button className="p-2 text-gray-400 hover:bg-gray-50">

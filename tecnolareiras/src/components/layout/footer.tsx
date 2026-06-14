@@ -9,7 +9,7 @@ export function Footer() {
   return (
     <footer className="bg-[#111111] text-white">
       {/* CTA Band */}
-      <div className="bg-[#D97706]">
+      <div className="bg-[#C8980C]">
         <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
             <h3 className="text-white font-bold text-xl">Precisa de um orçamento?</h3>
@@ -40,9 +40,10 @@ export function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-9 h-9 bg-[#D97706] rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">TL</span>
-              </div>
+              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-9 h-9 flex-shrink-0">
+                <circle cx="20" cy="20" r="20" fill="#CC3300"/>
+                <text x="20" y="26" textAnchor="middle" fill="white" fontSize="14" fontWeight="800" fontFamily="Arial, sans-serif">TL</text>
+              </svg>
               <span className="font-bold text-xl">Tecnolareiras</span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
@@ -54,7 +55,7 @@ export function Footer() {
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center hover:bg-[#D97706] transition-colors"
+                className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center hover:bg-[#C8980C] transition-colors"
                 aria-label="Facebook"
               >
                 <Share2 size={14} />
@@ -63,7 +64,7 @@ export function Footer() {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center hover:bg-[#D97706] transition-colors"
+                className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center hover:bg-[#C8980C] transition-colors"
                 aria-label="Instagram"
               >
                 <Camera size={14} />
@@ -72,7 +73,7 @@ export function Footer() {
                 href="https://youtube.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center hover:bg-[#D97706] transition-colors"
+                className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center hover:bg-[#C8980C] transition-colors"
                 aria-label="YouTube"
               >
                 <Play size={14} />
@@ -90,7 +91,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-gray-400 text-sm hover:text-[#D97706] transition-colors"
+                    className="text-gray-400 text-sm hover:text-[#C8980C] transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -109,7 +110,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-gray-400 text-sm hover:text-[#D97706] transition-colors"
+                    className="text-gray-400 text-sm hover:text-[#C8980C] transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -127,7 +128,7 @@ export function Footer() {
               <li>
                 <a
                   href={`tel:${CONTACT_PHONE}`}
-                  className="flex items-start gap-2.5 text-gray-400 text-sm hover:text-[#D97706] transition-colors"
+                  className="flex items-start gap-2.5 text-gray-400 text-sm hover:text-[#C8980C] transition-colors"
                 >
                   <Phone size={14} className="mt-0.5 shrink-0" />
                   {CONTACT_PHONE}
@@ -136,7 +137,7 @@ export function Footer() {
               <li>
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
-                  className="flex items-start gap-2.5 text-gray-400 text-sm hover:text-[#D97706] transition-colors"
+                  className="flex items-start gap-2.5 text-gray-400 text-sm hover:text-[#C8980C] transition-colors"
                 >
                   <Mail size={14} className="mt-0.5 shrink-0" />
                   {CONTACT_EMAIL}
@@ -164,7 +165,7 @@ export function Footer() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-gray-500 text-xs hover:text-[#D97706] transition-colors"
+                className="text-gray-500 text-xs hover:text-[#C8980C] transition-colors"
               >
                 {link.label}
               </Link>
@@ -176,7 +177,7 @@ export function Footer() {
               href="https://www.livroreclamacoes.pt"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-[#D97706] transition-colors"
+              className="hover:text-[#C8980C] transition-colors"
             >
               Livro de Reclamações Eletrónico
             </a>

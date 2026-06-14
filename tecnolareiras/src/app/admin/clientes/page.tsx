@@ -47,7 +47,7 @@ export default function AdminClientesPage() {
               <tr key={client.id} className="hover:bg-gray-50 transition-colors">
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-[#D97706]/10 rounded-full flex items-center justify-center text-[#D97706] font-bold text-sm">
+                    <div className="w-8 h-8 bg-[#C8980C]/10 rounded-full flex items-center justify-center text-[#C8980C] font-bold text-sm">
                       {client.name[0]}
                     </div>
                     <span className="font-medium text-[#111111]">{client.name}</span>
@@ -68,10 +68,10 @@ export default function AdminClientesPage() {
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center justify-end gap-1">
-                    <Link href={`/admin/clientes/${client.id}`} className="p-1.5 text-gray-400 hover:text-[#D97706] transition-colors">
+                    <Link href={`/admin/clientes/${client.id}`} className="p-1.5 text-gray-400 hover:text-[#C8980C] transition-colors">
                       <Eye size={14} />
                     </Link>
-                    <a href={`mailto:${client.email}`} className="p-1.5 text-gray-400 hover:text-[#D97706] transition-colors">
+                    <a href={`mailto:${client.email}`} className="p-1.5 text-gray-400 hover:text-[#C8980C] transition-colors">
                       <Mail size={14} />
                     </a>
                   </div>

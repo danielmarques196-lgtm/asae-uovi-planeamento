@@ -13,7 +13,7 @@ export default function PedirOrcamentoPage() {
       <section className="bg-[#111111] py-16">
         <div className="max-w-7xl mx-auto px-6">
           <nav className="text-sm text-gray-400 mb-4">
-            <Link href="/" className="hover:text-[#D97706]">Início</Link>
+            <Link href="/" className="hover:text-[#C8980C]">Início</Link>
             <span className="mx-2">/</span>
             <span className="text-white">Pedir Orçamento</span>
           </nav>

@@ -77,7 +77,7 @@ export function LoginForm() {
           <Label htmlFor="password">Password</Label>
           <Link
             href="/recuperar-password"
-            className="text-xs text-[#D97706] hover:underline"
+            className="text-xs text-[#C8980C] hover:underline"
           >
             Esqueceu a password?
           </Link>

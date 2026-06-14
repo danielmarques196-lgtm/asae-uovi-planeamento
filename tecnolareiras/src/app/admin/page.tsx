@@ -144,7 +144,7 @@ export default function AdminDashboard() {
         <div className="lg:col-span-2 bg-white rounded-xl border border-gray-100 overflow-hidden">
           <div className="flex items-center justify-between p-5 border-b border-gray-50">
             <h2 className="font-bold text-sm text-[#111111]">Encomendas Recentes</h2>
-            <Link href="/admin/encomendas" className="text-xs text-[#D97706] hover:underline flex items-center gap-1">
+            <Link href="/admin/encomendas" className="text-xs text-[#C8980C] hover:underline flex items-center gap-1">
               Ver todas <ArrowRight size={12} />
             </Link>
           </div>
@@ -184,7 +184,7 @@ export default function AdminDashboard() {
                   <Link
                     key={action.href}
                     href={action.href}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-600 hover:bg-gray-50 hover:text-[#D97706] transition-colors"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-600 hover:bg-gray-50 hover:text-[#C8980C] transition-colors"
                   >
                     <Icon size={15} />
                     {action.label}

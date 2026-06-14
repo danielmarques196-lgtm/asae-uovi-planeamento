@@ -38,12 +38,12 @@ export function Header() {
           <div className="flex items-center gap-4">
             <Link
               href={`tel:${CONTACT_PHONE}`}
-              className="flex items-center gap-1 hover:text-[#D97706] transition-colors"
+              className="flex items-center gap-1 hover:text-[#C8980C] transition-colors"
             >
               <Phone size={12} />
               {CONTACT_PHONE}
             </Link>
-            <Link href="/assistencia" className="hover:text-[#D97706] transition-colors">
+            <Link href="/assistencia" className="hover:text-[#C8980C] transition-colors">
               Assistência Técnica
             </Link>
           </div>
@@ -62,13 +62,15 @@ export function Header() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-9 h-9 bg-[#111111] rounded-lg flex items-center justify-center group-hover:bg-[#D97706] transition-colors">
-                <span className="text-white font-bold text-sm">TL</span>
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 flex-shrink-0">
+                <circle cx="20" cy="20" r="20" fill="#CC3300"/>
+                <text x="20" y="26" textAnchor="middle" fill="white" fontSize="14" fontWeight="800" fontFamily="Arial, sans-serif">TL</text>
+              </svg>
+              <div className="hidden sm:flex flex-col leading-none gap-0.5">
+                <span className="font-black text-[17px] text-[#111111] tracking-tight uppercase">Tecnolareiras</span>
+                <span className="text-[9px] text-[#C8980C] font-bold tracking-[0.15em] uppercase">Aquecimento Premium</span>
               </div>
-              <span className="font-bold text-xl text-[#111111] hidden sm:block">
-                Tecnolareiras
-              </span>
             </Link>
 
             {/* Desktop Nav */}
@@ -82,7 +84,7 @@ export function Header() {
                       onMouseEnter={() => setProductMenuOpen(true)}
                       onMouseLeave={() => setProductMenuOpen(false)}
                     >
-                      <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#D97706] transition-colors rounded-md hover:bg-gray-50 cursor-pointer">
+                      <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#C8980C] transition-colors rounded-md hover:bg-gray-50 cursor-pointer">
                         {link.label}
                         <ChevronDown
                           size={14}
@@ -95,7 +97,7 @@ export function Header() {
                             <Link
                               key={item.href}
                               href={item.href}
-                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#D97706] transition-colors"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#C8980C] transition-colors"
                             >
                               {item.label}
                             </Link>
@@ -103,7 +105,7 @@ export function Header() {
                           <div className="border-t border-gray-100 mt-2 pt-2">
                             <Link
                               href="/produtos"
-                              className="block px-4 py-2 text-sm font-medium text-[#D97706] hover:bg-gray-50 transition-colors"
+                              className="block px-4 py-2 text-sm font-medium text-[#C8980C] hover:bg-gray-50 transition-colors"
                             >
                               Ver todos os produtos →
                             </Link>
@@ -117,7 +119,7 @@ export function Header() {
                   <Link
                     key={link.label}
                     href={link.href}
-                    className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#D97706] transition-colors rounded-md hover:bg-gray-50"
+                    className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#C8980C] transition-colors rounded-md hover:bg-gray-50"
                   >
                     {link.label}
                   </Link>
@@ -127,21 +129,21 @@ export function Header() {
 
             {/* Actions */}
             <div className="flex items-center gap-2">
-              <button className="p-2 text-gray-600 hover:text-[#D97706] transition-colors hidden md:flex cursor-pointer">
+              <button className="p-2 text-gray-600 hover:text-[#C8980C] transition-colors hidden md:flex cursor-pointer">
                 <Search size={18} />
               </button>
               <Link
                 href="/area-cliente"
-                className="p-2 text-gray-600 hover:text-[#D97706] transition-colors hidden md:flex"
+                className="p-2 text-gray-600 hover:text-[#C8980C] transition-colors hidden md:flex"
               >
                 <User size={18} />
               </Link>
               <Link
                 href="/loja/carrinho"
-                className="p-2 text-gray-600 hover:text-[#D97706] transition-colors relative hidden md:flex"
+                className="p-2 text-gray-600 hover:text-[#C8980C] transition-colors relative hidden md:flex"
               >
                 <ShoppingCart size={18} />
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#D97706] text-white text-xs rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#C8980C] text-white text-xs rounded-full flex items-center justify-center">
                   0
                 </span>
               </Link>
@@ -167,7 +169,7 @@ export function Header() {
                 <Link
                   key={link.label}
                   href={link.href}
-                  className="px-3 py-3 text-sm font-medium text-gray-700 hover:text-[#D97706] border-b border-gray-50 transition-colors"
+                  className="px-3 py-3 text-sm font-medium text-gray-700 hover:text-[#C8980C] border-b border-gray-50 transition-colors"
                   onClick={() => setMobileOpen(false)}
                 >
                   {link.label}

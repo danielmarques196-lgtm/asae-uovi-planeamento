@@ -85,7 +85,7 @@ export default function AdminEncomendasPage() {
                 <td className="px-4 py-3 text-xs text-gray-400">{formatDate(order.createdAt)}</td>
                 <td className="px-4 py-3">
                   <div className="flex items-center justify-end">
-                    <Link href={`/admin/encomendas/${order.id}`} className="p-1.5 text-gray-400 hover:text-[#D97706] transition-colors">
+                    <Link href={`/admin/encomendas/${order.id}`} className="p-1.5 text-gray-400 hover:text-[#C8980C] transition-colors">
                       <Eye size={14} />
                     </Link>
                   </div>

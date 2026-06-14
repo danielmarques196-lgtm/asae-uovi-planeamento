@@ -80,7 +80,7 @@ export default function FAQPage() {
       <section className="bg-[#111111] py-16">
         <div className="max-w-7xl mx-auto px-6">
           <nav className="text-sm text-gray-400 mb-4">
-            <Link href="/" className="hover:text-[#D97706]">Início</Link>
+            <Link href="/" className="hover:text-[#C8980C]">Início</Link>
             <span className="mx-2">/</span>
             <span className="text-white">FAQ</span>
           </nav>
@@ -97,7 +97,7 @@ export default function FAQPage() {
             {faqs.map((section) => (
               <div key={section.category}>
                 <h2 className="text-lg font-bold text-[#111111] mb-4 flex items-center gap-2">
-                  <span className="w-6 h-6 bg-[#D97706] rounded-full flex items-center justify-center text-white text-xs">
+                  <span className="w-6 h-6 bg-[#C8980C] rounded-full flex items-center justify-center text-white text-xs">
                     {section.category[0]}
                   </span>
                   {section.category}
@@ -125,14 +125,14 @@ export default function FAQPage() {
             ))}
           </div>
 
-          <div className="mt-12 bg-[#D97706]/10 border border-[#D97706]/20 rounded-2xl p-8 text-center">
+          <div className="mt-12 bg-[#C8980C]/10 border border-[#C8980C]/20 rounded-2xl p-8 text-center">
             <h3 className="font-bold text-[#111111] mb-2">Não encontrou a sua resposta?</h3>
             <p className="text-sm text-gray-600 mb-4">
               A nossa equipa está disponível para responder a todas as suas questões.
             </p>
             <Link
               href="/contactos"
-              className="inline-flex items-center gap-2 bg-[#D97706] text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-[#B45309] transition-colors"
+              className="inline-flex items-center gap-2 bg-[#C8980C] text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-[#B45309] transition-colors"
             >
               Contactar-nos
             </Link>

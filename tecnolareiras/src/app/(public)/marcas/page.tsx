@@ -72,7 +72,7 @@ export default function MarcasPage() {
       <section className="bg-[#111111] py-16">
         <div className="max-w-7xl mx-auto px-6">
           <nav className="text-sm text-gray-400 mb-4">
-            <Link href="/" className="hover:text-[#D97706]">Início</Link>
+            <Link href="/" className="hover:text-[#C8980C]">Início</Link>
             <span className="mx-2">/</span>
             <span className="text-white">Marcas</span>
           </nav>
@@ -92,20 +92,20 @@ export default function MarcasPage() {
               <Link
                 key={brand.slug}
                 href={`/marcas/${brand.slug}`}
-                className="group bg-white rounded-2xl border border-gray-100 hover:border-[#D97706] hover:shadow-lg transition-all duration-300 p-8 flex gap-6"
+                className="group bg-white rounded-2xl border border-gray-100 hover:border-[#C8980C] hover:shadow-lg transition-all duration-300 p-8 flex gap-6"
               >
-                <div className="w-16 h-16 bg-gray-50 rounded-xl flex items-center justify-center text-3xl shrink-0 group-hover:bg-[#D97706]/10 transition-colors">
+                <div className="w-16 h-16 bg-gray-50 rounded-xl flex items-center justify-center text-3xl shrink-0 group-hover:bg-[#C8980C]/10 transition-colors">
                   {brand.emoji}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between mb-2">
                     <div>
-                      <h2 className="text-xl font-bold text-[#111111] group-hover:text-[#D97706] transition-colors">
+                      <h2 className="text-xl font-bold text-[#111111] group-hover:text-[#C8980C] transition-colors">
                         {brand.name}
                       </h2>
                       <span className="text-sm text-gray-400">{brand.country} · Desde {brand.founded}</span>
                     </div>
-                    <ArrowRight size={18} className="text-gray-300 group-hover:text-[#D97706] transition-colors shrink-0 mt-1" />
+                    <ArrowRight size={18} className="text-gray-300 group-hover:text-[#C8980C] transition-colors shrink-0 mt-1" />
                   </div>
                   <p className="text-sm text-gray-500 leading-relaxed mb-3 line-clamp-2">
                     {brand.description}

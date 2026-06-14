@@ -12,7 +12,7 @@ export default function ReclamacoesPage() {
       <section className="bg-[#111111] py-12">
         <div className="max-w-4xl mx-auto px-6">
           <nav className="text-sm text-gray-400 mb-4">
-            <Link href="/" className="hover:text-[#D97706]">Início</Link>
+            <Link href="/" className="hover:text-[#C8980C]">Início</Link>
             <span className="mx-2">/</span>
             <span className="text-white">Livro de Reclamações</span>
           </nav>
@@ -33,7 +33,7 @@ export default function ReclamacoesPage() {
               href="https://www.livroreclamacoes.pt"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-[#D97706] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#B45309] transition-colors"
+              className="inline-flex items-center gap-2 bg-[#C8980C] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#B45309] transition-colors"
             >
               Aceder ao Livro de Reclamações Eletrónico
               <ExternalLink size={16} />
@@ -49,14 +49,14 @@ export default function ReclamacoesPage() {
               <li>
                 <strong>CACCL</strong> – Centro de Arbitragem de Conflitos de Consumo de Lisboa
                 <br />
-                <a href="https://www.centroarbitragemlisboa.pt" className="text-[#D97706] hover:underline" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.centroarbitragemlisboa.pt" className="text-[#C8980C] hover:underline" target="_blank" rel="noopener noreferrer">
                   www.centroarbitragemlisboa.pt
                 </a>
               </li>
               <li>
                 <strong>Plataforma ODR</strong> – Resolução de Litígios em Linha (UE)
                 <br />
-                <a href="https://ec.europa.eu/consumers/odr" className="text-[#D97706] hover:underline" target="_blank" rel="noopener noreferrer">
+                <a href="https://ec.europa.eu/consumers/odr" className="text-[#C8980C] hover:underline" target="_blank" rel="noopener noreferrer">
                   ec.europa.eu/consumers/odr
                 </a>
               </li>

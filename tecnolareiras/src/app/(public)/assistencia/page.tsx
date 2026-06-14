@@ -48,7 +48,7 @@ export default function AssistenciaPage() {
       <section className="bg-[#111111] py-16">
         <div className="max-w-7xl mx-auto px-6">
           <nav className="text-sm text-gray-400 mb-4">
-            <Link href="/" className="hover:text-[#D97706]">Início</Link>
+            <Link href="/" className="hover:text-[#C8980C]">Início</Link>
             <span className="mx-2">/</span>
             <span className="text-white">Assistência</span>
           </nav>
@@ -66,7 +66,7 @@ export default function AssistenciaPage() {
             {supportOptions.map((option) => (
               <div
                 key={option.title}
-                className="border border-gray-100 rounded-2xl p-6 text-center hover:border-[#D97706] hover:shadow-md transition-all"
+                className="border border-gray-100 rounded-2xl p-6 text-center hover:border-[#C8980C] hover:shadow-md transition-all"
               >
                 <div className="text-4xl mb-4">{option.icon}</div>
                 <h3 className="font-bold text-[#111111] mb-2">{option.title}</h3>
@@ -88,13 +88,13 @@ export default function AssistenciaPage() {
               {commonIssues.map((issue) => (
                 <div key={issue.title} className="bg-gray-50 rounded-xl p-5">
                   <div className="flex items-start gap-3 mb-3">
-                    <AlertTriangle size={18} className="text-[#D97706] mt-0.5 shrink-0" />
+                    <AlertTriangle size={18} className="text-[#C8980C] mt-0.5 shrink-0" />
                     <h3 className="font-bold text-[#111111]">{issue.title}</h3>
                   </div>
                   <ul className="space-y-2 ml-7">
                     {issue.steps.map((step, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
-                        <span className="text-[#D97706] font-bold shrink-0">{i + 1}.</span>
+                        <span className="text-[#C8980C] font-bold shrink-0">{i + 1}.</span>
                         {step}
                       </li>
                     ))}

@@ -147,9 +147,9 @@ export default async function MarcaPage({ params }: Props) {
       <section className="bg-[#111111] py-16">
         <div className="max-w-7xl mx-auto px-6">
           <nav className="text-sm text-gray-400 mb-6">
-            <Link href="/" className="hover:text-[#D97706]">Início</Link>
+            <Link href="/" className="hover:text-[#C8980C]">Início</Link>
             <span className="mx-2">/</span>
-            <Link href="/marcas" className="hover:text-[#D97706]">Marcas</Link>
+            <Link href="/marcas" className="hover:text-[#C8980C]">Marcas</Link>
             <span className="mx-2">/</span>
             <span className="text-white">{brand.name}</span>
           </nav>
@@ -159,7 +159,7 @@ export default async function MarcaPage({ params }: Props) {
               {brand.emoji}
             </div>
             <div>
-              <div className="text-[#D97706] text-sm font-medium mb-1">{brand.country} · Desde {brand.founded}</div>
+              <div className="text-[#C8980C] text-sm font-medium mb-1">{brand.country} · Desde {brand.founded}</div>
               <h1 className="text-4xl font-bold text-white mb-3">{brand.name}</h1>
               <p className="text-gray-300 max-w-xl">{brand.description}</p>
               {brand.website && (
@@ -167,7 +167,7 @@ export default async function MarcaPage({ params }: Props) {
                   href={brand.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-[#D97706] text-sm mt-3 hover:underline"
+                  className="inline-flex items-center gap-1.5 text-[#C8980C] text-sm mt-3 hover:underline"
                 >
                   Website oficial <ExternalLink size={12} />
                 </a>
@@ -198,7 +198,7 @@ export default async function MarcaPage({ params }: Props) {
                   <ul className="space-y-2">
                     {brand.catalogues.map((cat) => (
                       <li key={cat.title}>
-                        <button className="flex items-center gap-2 text-sm text-gray-600 hover:text-[#D97706] transition-colors w-full text-left">
+                        <button className="flex items-center gap-2 text-sm text-gray-600 hover:text-[#C8980C] transition-colors w-full text-left">
                           <Download size={14} />
                           <span>{cat.title}</span>
                         </button>
@@ -208,7 +208,7 @@ export default async function MarcaPage({ params }: Props) {
                 </div>
               )}
 
-              <div className="bg-[#D97706]/10 border border-[#D97706]/20 rounded-xl p-6">
+              <div className="bg-[#C8980C]/10 border border-[#C8980C]/20 rounded-xl p-6">
                 <h3 className="font-bold text-[#111111] mb-2">Interessado nos produtos {brand.name}?</h3>
                 <p className="text-sm text-gray-600 mb-4">
                   Peça um orçamento personalizado ou visite a nossa loja para ver os produtos em exposição.
@@ -227,7 +227,7 @@ export default async function MarcaPage({ params }: Props) {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-bold text-[#111111]">Produtos {brand.name}</h2>
-            <Link href={`/produtos?marca=${slug}`} className="text-sm text-[#D97706] hover:underline flex items-center gap-1">
+            <Link href={`/produtos?marca=${slug}`} className="text-sm text-[#C8980C] hover:underline flex items-center gap-1">
               Ver todos <ArrowRight size={14} />
             </Link>
           </div>
@@ -237,12 +237,12 @@ export default async function MarcaPage({ params }: Props) {
               <Link
                 key={product.slug}
                 href={`/produtos/${product.slug}`}
-                className="bg-white rounded-xl border border-gray-100 hover:border-[#D97706] hover:shadow-md transition-all p-6 group"
+                className="bg-white rounded-xl border border-gray-100 hover:border-[#C8980C] hover:shadow-md transition-all p-6 group"
               >
                 <div className="w-full aspect-square bg-gray-50 rounded-lg flex items-center justify-center mb-4">
                   <span className="text-5xl">🔥</span>
                 </div>
-                <h3 className="font-semibold text-[#111111] group-hover:text-[#D97706] transition-colors mb-1">
+                <h3 className="font-semibold text-[#111111] group-hover:text-[#C8980C] transition-colors mb-1">
                   {product.name}
                 </h3>
                 {product.power && (
@@ -250,7 +250,7 @@ export default async function MarcaPage({ params }: Props) {
                 )}
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-[#111111]">{product.price.toLocaleString("pt-PT")} €</span>
-                  <ArrowRight size={16} className="text-gray-400 group-hover:text-[#D97706] transition-colors" />
+                  <ArrowRight size={16} className="text-gray-400 group-hover:text-[#C8980C] transition-colors" />
                 </div>
               </Link>
             ))}

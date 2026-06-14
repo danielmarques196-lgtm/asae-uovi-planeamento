@@ -17,7 +17,7 @@ export default function RecuperarPasswordPage() {
       </div>
       <RecoverForm />
       <div className="mt-6 text-center">
-        <Link href="/login" className="text-sm text-[#D97706] hover:underline">
+        <Link href="/login" className="text-sm text-[#C8980C] hover:underline">
           ← Voltar ao login
         </Link>
       </div>

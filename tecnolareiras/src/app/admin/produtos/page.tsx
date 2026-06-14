@@ -38,13 +38,13 @@ export default function AdminProdutosPage() {
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <Input placeholder="Pesquisar produtos..." className="pl-9 h-9" />
         </div>
-        <select className="h-9 border border-gray-200 rounded-lg px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#D97706]/50">
+        <select className="h-9 border border-gray-200 rounded-lg px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#C8980C]/50">
           <option>Todas as categorias</option>
         </select>
-        <select className="h-9 border border-gray-200 rounded-lg px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#D97706]/50">
+        <select className="h-9 border border-gray-200 rounded-lg px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#C8980C]/50">
           <option>Todas as marcas</option>
         </select>
-        <select className="h-9 border border-gray-200 rounded-lg px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#D97706]/50">
+        <select className="h-9 border border-gray-200 rounded-lg px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#C8980C]/50">
           <option>Estado: Todos</option>
           <option>Ativo</option>
           <option>Inativo</option>
@@ -95,10 +95,10 @@ export default function AdminProdutosPage() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-1">
-                      <Link href={`/produtos/${product.id}`} target="_blank" className="p-1.5 text-gray-400 hover:text-[#D97706] transition-colors rounded">
+                      <Link href={`/produtos/${product.id}`} target="_blank" className="p-1.5 text-gray-400 hover:text-[#C8980C] transition-colors rounded">
                         <Eye size={14} />
                       </Link>
-                      <Link href={`/admin/produtos/${product.id}/editar`} className="p-1.5 text-gray-400 hover:text-[#D97706] transition-colors rounded">
+                      <Link href={`/admin/produtos/${product.id}/editar`} className="p-1.5 text-gray-400 hover:text-[#C8980C] transition-colors rounded">
                         <Edit size={14} />
                       </Link>
                       <button className="p-1.5 text-gray-400 hover:text-red-500 transition-colors rounded">
@@ -115,7 +115,7 @@ export default function AdminProdutosPage() {
         <div className="flex items-center justify-between px-4 py-3 border-t border-gray-50">
           <span className="text-xs text-gray-400">Mostrando 1-6 de 6 produtos</span>
           <div className="flex gap-1">
-            <button className="w-7 h-7 flex items-center justify-center rounded text-xs bg-[#D97706] text-white">1</button>
+            <button className="w-7 h-7 flex items-center justify-center rounded text-xs bg-[#C8980C] text-white">1</button>
           </div>
         </div>
       </div>

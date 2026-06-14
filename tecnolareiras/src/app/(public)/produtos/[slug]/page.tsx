@@ -86,11 +86,11 @@ export default async function ProductPage({ params }: Props) {
       <div className="bg-gray-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-3">
           <nav className="flex items-center gap-2 text-sm text-gray-400">
-            <Link href="/" className="hover:text-[#D97706]">Início</Link>
+            <Link href="/" className="hover:text-[#C8980C]">Início</Link>
             <ChevronRight size={14} />
-            <Link href="/produtos" className="hover:text-[#D97706]">Produtos</Link>
+            <Link href="/produtos" className="hover:text-[#C8980C]">Produtos</Link>
             <ChevronRight size={14} />
-            <Link href="/produtos/salamandras-a-pellets" className="hover:text-[#D97706]">
+            <Link href="/produtos/salamandras-a-pellets" className="hover:text-[#C8980C]">
               {sampleProduct.category}
             </Link>
             <ChevronRight size={14} />
@@ -112,7 +112,7 @@ export default async function ProductPage({ params }: Props) {
                 {[1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
-                    className="aspect-square bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100 cursor-pointer hover:border-[#D97706] transition-colors"
+                    className="aspect-square bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100 cursor-pointer hover:border-[#C8980C] transition-colors"
                   >
                     <span className="text-2xl">🔥</span>
                   </div>
@@ -126,7 +126,7 @@ export default async function ProductPage({ params }: Props) {
                 <div>
                   <Link
                     href={`/marcas/${sampleProduct.brand.toLowerCase()}`}
-                    className="text-sm text-[#D97706] font-semibold hover:underline"
+                    className="text-sm text-[#C8980C] font-semibold hover:underline"
                   >
                     {sampleProduct.brand}
                   </Link>
@@ -141,7 +141,7 @@ export default async function ProductPage({ params }: Props) {
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex gap-0.5">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} size={14} className="text-[#D97706] fill-[#D97706]" />
+                    <Star key={i} size={14} className="text-[#C8980C] fill-[#C8980C]" />
                   ))}
                 </div>
                 <span className="text-sm text-gray-400">(24 avaliações)</span>
@@ -188,7 +188,7 @@ export default async function ProductPage({ params }: Props) {
                 <Button variant="outline" size="lg" asChild>
                   <Link href="/pedir-orcamento">Pedir Orçamento</Link>
                 </Button>
-                <button className="p-3 border border-gray-200 rounded-lg hover:border-[#D97706] transition-colors">
+                <button className="p-3 border border-gray-200 rounded-lg hover:border-[#C8980C] transition-colors">
                   <Heart size={18} className="text-gray-500" />
                 </button>
               </div>
@@ -223,7 +223,7 @@ export default async function ProductPage({ params }: Props) {
                   key={tab}
                   className={`px-6 py-4 text-sm font-medium transition-colors ${
                     i === 0
-                      ? "text-[#D97706] border-b-2 border-[#D97706]"
+                      ? "text-[#C8980C] border-b-2 border-[#C8980C]"
                       : "text-gray-500 hover:text-[#111111]"
                   }`}
                 >
@@ -237,7 +237,7 @@ export default async function ProductPage({ params }: Props) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {sampleProduct.features.map((feature) => (
                   <div key={feature} className="flex items-start gap-2.5">
-                    <CheckCircle size={16} className="text-[#D97706] mt-0.5 shrink-0" />
+                    <CheckCircle size={16} className="text-[#C8980C] mt-0.5 shrink-0" />
                     <span className="text-sm text-gray-600">{feature}</span>
                   </div>
                 ))}
@@ -269,7 +269,7 @@ export default async function ProductPage({ params }: Props) {
                 {["Manual do Utilizador (PT)", "Manual de Instalação (PT)", "Ficha Técnica", "Certificado CE"].map((doc) => (
                   <button
                     key={doc}
-                    className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:border-[#D97706] hover:text-[#D97706] transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:border-[#C8980C] hover:text-[#C8980C] transition-colors"
                   >
                     <Download size={14} />
                     {doc}

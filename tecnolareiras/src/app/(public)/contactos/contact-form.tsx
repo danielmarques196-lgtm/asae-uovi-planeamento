@@ -80,7 +80,7 @@ export function ContactForm() {
           <Label htmlFor="subject">Assunto *</Label>
           <select
             id="subject"
-            className="mt-1 flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D97706]/50"
+            className="mt-1 flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#C8980C]/50"
             {...register("subject")}
           >
             <option value="">Selecione...</option>
@@ -101,10 +101,10 @@ export function ContactForm() {
       </div>
 
       <div className="flex items-start gap-2">
-        <input id="consent" type="checkbox" className="mt-1 accent-[#D97706]" {...register("consent")} />
+        <input id="consent" type="checkbox" className="mt-1 accent-[#C8980C]" {...register("consent")} />
         <label htmlFor="consent" className="text-xs text-gray-500">
           Aceito que os meus dados sejam tratados para resposta ao contacto, de acordo com a{" "}
-          <a href="/privacidade" className="text-[#D97706] hover:underline">Política de Privacidade</a>.
+          <a href="/privacidade" className="text-[#C8980C] hover:underline">Política de Privacidade</a>.
         </label>
       </div>
       {errors.consent && <p className="text-red-500 text-xs">{errors.consent.message}</p>}

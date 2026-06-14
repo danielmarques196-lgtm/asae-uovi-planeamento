@@ -57,7 +57,7 @@ export function QuotationForm() {
           O seu pedido de orçamento foi submetido com sucesso.
           A nossa equipa entrará em contacto em até 24 horas úteis.
         </p>
-        <Link href="/" className="text-[#D97706] hover:underline text-sm">← Voltar à página inicial</Link>
+        <Link href="/" className="text-[#C8980C] hover:underline text-sm">← Voltar à página inicial</Link>
       </div>
     );
   }
@@ -89,7 +89,7 @@ export function QuotationForm() {
           <Label htmlFor="type">Tipo de pedido *</Label>
           <select
             id="type"
-            className="mt-1 flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D97706]/50"
+            className="mt-1 flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#C8980C]/50"
             {...register("type")}
           >
             <option value="">Selecione...</option>
@@ -128,17 +128,17 @@ export function QuotationForm() {
         {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
       </div>
 
-      <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-[#D97706] transition-colors cursor-pointer">
+      <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-[#C8980C] transition-colors cursor-pointer">
         <Upload size={24} className="text-gray-400 mx-auto mb-2" />
         <p className="text-sm text-gray-500">Clique para adicionar fotos, plantas ou documentos</p>
         <p className="text-xs text-gray-400 mt-1">JPG, PNG, PDF até 10MB</p>
       </div>
 
       <div className="flex items-start gap-2">
-        <input id="consent" type="checkbox" className="mt-1 accent-[#D97706]" {...register("consent")} />
+        <input id="consent" type="checkbox" className="mt-1 accent-[#C8980C]" {...register("consent")} />
         <label htmlFor="consent" className="text-xs text-gray-500">
           Aceito que os meus dados sejam processados para resposta ao pedido de orçamento,
-          de acordo com a <a href="/privacidade" className="text-[#D97706] hover:underline">Política de Privacidade</a>.
+          de acordo com a <a href="/privacidade" className="text-[#C8980C] hover:underline">Política de Privacidade</a>.
         </label>
       </div>
       {errors.consent && <p className="text-red-500 text-xs">Obrigatório</p>}

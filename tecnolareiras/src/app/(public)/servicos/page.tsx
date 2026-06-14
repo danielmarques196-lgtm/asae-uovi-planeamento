@@ -80,7 +80,7 @@ export default function ServicosPage() {
       <section className="bg-[#111111] py-16">
         <div className="max-w-7xl mx-auto px-6">
           <nav className="text-sm text-gray-400 mb-4">
-            <Link href="/" className="hover:text-[#D97706]">Início</Link>
+            <Link href="/" className="hover:text-[#C8980C]">Início</Link>
             <span className="mx-2">/</span>
             <span className="text-white">Serviços</span>
           </nav>
@@ -119,7 +119,7 @@ export default function ServicosPage() {
                   <ul className="space-y-3">
                     {service.includes.map((item) => (
                       <li key={item} className="flex items-start gap-2.5">
-                        <CheckCircle size={16} className="text-[#D97706] mt-0.5 shrink-0" />
+                        <CheckCircle size={16} className="text-[#C8980C] mt-0.5 shrink-0" />
                         <span className="text-sm text-gray-600">{item}</span>
                       </li>
                     ))}
@@ -132,14 +132,14 @@ export default function ServicosPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-[#D97706]">
+      <section className="py-16 bg-[#C8980C]">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Precisa de um serviço?</h2>
           <p className="text-white/80 mb-8 max-w-xl mx-auto">
             Entre em contacto connosco para agendar um serviço ou pedir um orçamento sem compromisso.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Button className="bg-white text-[#D97706] hover:bg-gray-100" size="lg" asChild>
+            <Button className="bg-white text-[#C8980C] hover:bg-gray-100" size="lg" asChild>
               <Link href="/pedir-orcamento">Pedir Orçamento</Link>
             </Button>
             <Button className="border border-white/40 bg-white/10 text-white hover:bg-white/20" size="lg" asChild>

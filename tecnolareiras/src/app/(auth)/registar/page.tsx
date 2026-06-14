@@ -20,7 +20,7 @@ export default function RegisterPage() {
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-500">
           Já tem conta?{" "}
-          <Link href="/login" className="text-[#D97706] hover:underline font-medium">
+          <Link href="/login" className="text-[#C8980C] hover:underline font-medium">
             Iniciar sessão
           </Link>
         </p>

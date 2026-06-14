@@ -63,10 +63,10 @@ export default function AdminBlogPage() {
                 <td className="px-4 py-3 text-xs text-gray-400">{formatDate(post.createdAt)}</td>
                 <td className="px-4 py-3">
                   <div className="flex items-center justify-end gap-1">
-                    <Link href={`/blog/${post.slug}`} target="_blank" className="p-1.5 text-gray-400 hover:text-[#D97706] transition-colors">
+                    <Link href={`/blog/${post.slug}`} target="_blank" className="p-1.5 text-gray-400 hover:text-[#C8980C] transition-colors">
                       <Eye size={14} />
                     </Link>
-                    <Link href={`/admin/blog/${post.id}/editar`} className="p-1.5 text-gray-400 hover:text-[#D97706] transition-colors">
+                    <Link href={`/admin/blog/${post.id}/editar`} className="p-1.5 text-gray-400 hover:text-[#C8980C] transition-colors">
                       <Edit size={14} />
                     </Link>
                     <button className="p-1.5 text-gray-400 hover:text-red-500 transition-colors">

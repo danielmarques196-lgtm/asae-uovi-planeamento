@@ -91,7 +91,7 @@ export default function BlogPage() {
       <section className="bg-[#111111] py-16">
         <div className="max-w-7xl mx-auto px-6">
           <nav className="text-sm text-gray-400 mb-4">
-            <Link href="/" className="hover:text-[#D97706]">Início</Link>
+            <Link href="/" className="hover:text-[#C8980C]">Início</Link>
             <span className="mx-2">/</span>
             <span className="text-white">Blog</span>
           </nav>
@@ -106,13 +106,13 @@ export default function BlogPage() {
         <div className="max-w-7xl mx-auto px-6">
           {/* Category filters */}
           <div className="flex flex-wrap gap-2 mb-10">
-            <button className="px-4 py-1.5 rounded-full text-sm font-medium bg-[#D97706] text-white">
+            <button className="px-4 py-1.5 rounded-full text-sm font-medium bg-[#C8980C] text-white">
               Todos
             </button>
             {categories.map((cat) => (
               <button
                 key={cat}
-                className="px-4 py-1.5 rounded-full text-sm text-gray-600 bg-white border border-gray-200 hover:border-[#D97706] hover:text-[#D97706] transition-colors"
+                className="px-4 py-1.5 rounded-full text-sm text-gray-600 bg-white border border-gray-200 hover:border-[#C8980C] hover:text-[#C8980C] transition-colors"
               >
                 {cat}
               </button>
@@ -122,7 +122,7 @@ export default function BlogPage() {
           {/* Featured post */}
           <Link
             href={`/blog/${featured.slug}`}
-            className="group block bg-white rounded-2xl border border-gray-100 hover:border-[#D97706] hover:shadow-lg transition-all overflow-hidden mb-8"
+            className="group block bg-white rounded-2xl border border-gray-100 hover:border-[#C8980C] hover:shadow-lg transition-all overflow-hidden mb-8"
           >
             <div className="grid grid-cols-1 lg:grid-cols-2">
               <div className="aspect-video lg:aspect-auto bg-gray-100 flex items-center justify-center">
@@ -133,7 +133,7 @@ export default function BlogPage() {
                   <Badge variant="accent">{featured.category}</Badge>
                   <Badge variant="secondary">Destaque</Badge>
                 </div>
-                <h2 className="text-2xl font-bold text-[#111111] mb-3 group-hover:text-[#D97706] transition-colors">
+                <h2 className="text-2xl font-bold text-[#111111] mb-3 group-hover:text-[#C8980C] transition-colors">
                   {featured.title}
                 </h2>
                 <p className="text-gray-500 text-sm leading-relaxed mb-4">{featured.excerpt}</p>
@@ -151,14 +151,14 @@ export default function BlogPage() {
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className="group bg-white rounded-xl border border-gray-100 hover:border-[#D97706] hover:shadow-md transition-all overflow-hidden flex flex-col"
+                className="group bg-white rounded-xl border border-gray-100 hover:border-[#C8980C] hover:shadow-md transition-all overflow-hidden flex flex-col"
               >
                 <div className="aspect-video bg-gray-50 flex items-center justify-center">
                   <span className="text-4xl">📝</span>
                 </div>
                 <div className="p-5 flex flex-col flex-1">
                   <Badge variant="secondary" className="self-start mb-3">{post.category}</Badge>
-                  <h3 className="font-bold text-[#111111] mb-2 text-sm leading-snug group-hover:text-[#D97706] transition-colors line-clamp-2">
+                  <h3 className="font-bold text-[#111111] mb-2 text-sm leading-snug group-hover:text-[#C8980C] transition-colors line-clamp-2">
                     {post.title}
                   </h3>
                   <p className="text-xs text-gray-500 leading-relaxed mb-4 line-clamp-3 flex-1">

@@ -35,10 +35,10 @@ export default function AreaClientePage() {
             <Link
               key={item.href}
               href={item.href}
-              className="bg-white rounded-xl border border-gray-100 p-5 hover:border-[#D97706] hover:shadow-md transition-all group"
+              className="bg-white rounded-xl border border-gray-100 p-5 hover:border-[#C8980C] hover:shadow-md transition-all group"
             >
-              <Icon size={22} className="text-[#D97706] mb-3" />
-              <div className="font-semibold text-sm text-[#111111] group-hover:text-[#D97706] transition-colors">
+              <Icon size={22} className="text-[#C8980C] mb-3" />
+              <div className="font-semibold text-sm text-[#111111] group-hover:text-[#C8980C] transition-colors">
                 {item.label}
               </div>
               <div className="text-xs text-gray-400 mt-0.5">{item.count}</div>
@@ -51,7 +51,7 @@ export default function AreaClientePage() {
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
         <div className="flex items-center justify-between p-5 border-b border-gray-50">
           <h2 className="font-bold text-[#111111]">Encomendas Recentes</h2>
-          <Link href="/area-cliente/encomendas" className="text-sm text-[#D97706] hover:underline flex items-center gap-1">
+          <Link href="/area-cliente/encomendas" className="text-sm text-[#C8980C] hover:underline flex items-center gap-1">
             Ver todas <ArrowRight size={14} />
           </Link>
         </div>
@@ -81,18 +81,18 @@ export default function AreaClientePage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Link
           href="/pedir-orcamento"
-          className="bg-[#D97706]/10 border border-[#D97706]/20 rounded-xl p-5 hover:bg-[#D97706]/15 transition-colors group"
+          className="bg-[#C8980C]/10 border border-[#C8980C]/20 rounded-xl p-5 hover:bg-[#C8980C]/15 transition-colors group"
         >
-          <ShoppingBag size={22} className="text-[#D97706] mb-2" />
-          <div className="font-semibold text-[#111111] group-hover:text-[#D97706] transition-colors">Pedir Novo Orçamento</div>
+          <ShoppingBag size={22} className="text-[#C8980C] mb-2" />
+          <div className="font-semibold text-[#111111] group-hover:text-[#C8980C] transition-colors">Pedir Novo Orçamento</div>
           <div className="text-xs text-gray-500 mt-0.5">Solicite uma proposta personalizada</div>
         </Link>
         <Link
           href="/assistencia"
-          className="bg-gray-50 border border-gray-100 rounded-xl p-5 hover:border-[#D97706] transition-colors group"
+          className="bg-gray-50 border border-gray-100 rounded-xl p-5 hover:border-[#C8980C] transition-colors group"
         >
-          <Wrench size={22} className="text-gray-400 mb-2 group-hover:text-[#D97706] transition-colors" />
-          <div className="font-semibold text-[#111111] group-hover:text-[#D97706] transition-colors">Assistência Técnica</div>
+          <Wrench size={22} className="text-gray-400 mb-2 group-hover:text-[#C8980C] transition-colors" />
+          <div className="font-semibold text-[#111111] group-hover:text-[#C8980C] transition-colors">Assistência Técnica</div>
           <div className="text-xs text-gray-500 mt-0.5">Abrir um novo ticket de suporte</div>
         </Link>
       </div>

@@ -26,9 +26,9 @@ export default async function BlogPostPage({ params }: Props) {
       <div className="bg-gray-50 border-b border-gray-100">
         <div className="max-w-4xl mx-auto px-6 py-3">
           <nav className="flex items-center gap-2 text-sm text-gray-400">
-            <Link href="/" className="hover:text-[#D97706]">Início</Link>
+            <Link href="/" className="hover:text-[#C8980C]">Início</Link>
             <span>/</span>
-            <Link href="/blog" className="hover:text-[#D97706]">Blog</Link>
+            <Link href="/blog" className="hover:text-[#C8980C]">Blog</Link>
             <span>/</span>
             <span className="text-[#111111]">Artigo</span>
           </nav>
@@ -90,10 +90,10 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
 
           <div className="mt-12 pt-8 border-t border-gray-100 flex items-center justify-between">
-            <Link href="/blog" className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#D97706] transition-colors">
+            <Link href="/blog" className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#C8980C] transition-colors">
               <ArrowLeft size={16} /> Voltar ao Blog
             </Link>
-            <button className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#D97706] transition-colors">
+            <button className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#C8980C] transition-colors">
               <Share2 size={16} /> Partilhar
             </button>
           </div>

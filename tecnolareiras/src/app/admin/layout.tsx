@@ -61,9 +61,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Logo */}
         <div className="h-14 flex items-center px-4 border-b border-white/10">
           <Link href="/admin" className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-[#D97706] rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xs">TL</span>
-            </div>
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 flex-shrink-0">
+              <circle cx="20" cy="20" r="20" fill="#CC3300"/>
+              <text x="20" y="26" textAnchor="middle" fill="white" fontSize="14" fontWeight="800" fontFamily="Arial, sans-serif">TL</text>
+            </svg>
             <span className="text-white font-bold text-sm">Admin</span>
           </Link>
         </div>
@@ -115,10 +116,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="flex items-center gap-3">
             <button className="relative p-2 text-gray-500 hover:text-[#111111] transition-colors">
               <Bell size={18} />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-[#D97706] rounded-full" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-[#C8980C] rounded-full" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-[#D97706] rounded-full flex items-center justify-center text-white text-xs font-bold">
+              <div className="w-8 h-8 bg-[#C8980C] rounded-full flex items-center justify-center text-white text-xs font-bold">
                 A
               </div>
               <span className="text-sm font-medium text-gray-700">Administrador</span>

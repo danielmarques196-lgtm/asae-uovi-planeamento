@@ -12,7 +12,7 @@ export default function CookiesPage() {
       <section className="bg-[#111111] py-12">
         <div className="max-w-4xl mx-auto px-6">
           <nav className="text-sm text-gray-400 mb-4">
-            <Link href="/" className="hover:text-[#D97706]">Início</Link>
+            <Link href="/" className="hover:text-[#C8980C]">Início</Link>
             <span className="mx-2">/</span>
             <span className="text-white">Política de Cookies</span>
           </nav>
