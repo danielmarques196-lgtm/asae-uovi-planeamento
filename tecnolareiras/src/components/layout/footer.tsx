@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
-import { Phone, Mail, MapPin, Share2, Camera, Play } from "lucide-react";
-import { FOOTER_LINKS, CONTACT_EMAIL, CONTACT_PHONE, CONTACT_ADDRESS } from "@/lib/constants";
+import { Phone, Mail, MapPin, Share2, Camera, Play, Clock } from "lucide-react";
+import { FOOTER_LINKS, CONTACT_EMAIL, CONTACT_PHONE, CONTACT_ADDRESS, OPENING_HOURS, COMPANY_FOUNDED } from "@/lib/constants";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -46,9 +46,9 @@ export function Footer() {
               </svg>
               <span className="font-bold text-xl">Tecnolareiras</span>
             </div>
-            <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              Especialistas em recuperadores de calor, salamandras, lareiras e sistemas de aquecimento.
-              Instalação e manutenção profissional em todo o Portugal.
+            <p className="text-gray-400 text-sm leading-relaxed mb-4">
+              Especialistas em recuperadores de calor, salamandras, lareiras, ar condicionado e energia solar.
+              Em Entroncamento desde {COMPANY_FOUNDED}.
             </p>
             <div className="flex gap-3">
               <a
@@ -148,6 +148,14 @@ export function Footer() {
                   <MapPin size={14} className="mt-0.5 shrink-0" />
                   {CONTACT_ADDRESS}
                 </span>
+              </li>
+              <li className="pt-1">
+                {OPENING_HOURS.map((h) => (
+                  <span key={h.days} className="flex items-start gap-2.5 text-gray-400 text-xs leading-relaxed">
+                    <Clock size={12} className="mt-0.5 shrink-0" />
+                    {h.days}: {h.hours}
+                  </span>
+                ))}
               </li>
             </ul>
           </div>

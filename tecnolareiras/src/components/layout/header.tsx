@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X, Phone, ShoppingCart, User, Search, ChevronDown } from "lucide-react";
-import { NAV_LINKS, CONTACT_PHONE } from "@/lib/constants";
+import { NAV_LINKS, CONTACT_PHONE, CONTACT_PHONE_DISPLAY } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/cart-context";
@@ -36,14 +36,14 @@ export function Header() {
       {/* Top bar */}
       <div className="bg-[#111111] text-white text-xs py-2 hidden md:block">
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-          <span>Especialistas em aquecimento a biomassa em Portugal</span>
+          <span>Especialistas em recuperadores, salamandras e climatização · Entroncamento</span>
           <div className="flex items-center gap-4">
             <Link
               href={`tel:${CONTACT_PHONE}`}
               className="flex items-center gap-1 hover:text-[#C8980C] transition-colors"
             >
               <Phone size={12} />
-              {CONTACT_PHONE}
+              {CONTACT_PHONE_DISPLAY}
             </Link>
             <Link href="/assistencia" className="hover:text-[#C8980C] transition-colors">
               Assistência Técnica
