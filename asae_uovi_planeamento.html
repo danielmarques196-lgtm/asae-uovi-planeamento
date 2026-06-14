@@ -293,12 +293,15 @@ body{-webkit-text-size-adjust:100%}
 @media(max-width:599px){
   #save-status{display:none}
   .topbar-actions{width:auto;order:unset}
+  .day-body{overflow-x:visible}
+  .plan-table{min-width:unset;width:100%}
   .plan-table thead{display:none}
-  .plan-table tbody tr{display:grid;grid-template-columns:auto 1fr auto;gap:2px 6px;padding:8px;border-bottom:1px solid var(--border2)}
+  .plan-table tbody tr{display:grid;grid-template-columns:auto 1fr;gap:2px 6px;padding:10px 8px;border-bottom:1px solid var(--border2)}
   .plan-table tbody td{padding:1px 0;border:none;font-size:12px}
   .plan-table tbody td:first-child{grid-row:1;grid-column:1}
   .plan-table tbody td:nth-child(2){grid-row:1;grid-column:2;font-weight:700}
-  .plan-table tbody td:last-child{grid-row:1;grid-column:3}
+  .plan-table tbody td:last-child{grid-row:auto;grid-column:1/-1;margin-top:8px;display:flex;gap:8px}
+  .plan-table tbody td:last-child .btn{min-height:32px;padding:6px 10px!important;font-size:12px!important}
   .plan-table tbody td:nth-child(n+3):not(:last-child){grid-column:1/-1;font-size:11px;color:var(--text2)}
   .plan-table tbody tr.inline-edit-row{display:block}
   .plan-table tbody tr.inline-edit-row td{display:block}
