@@ -140,6 +140,12 @@ button,input,select{min-height:34px;touch-action:manipulation}
 .plan-table tbody tr.ausencia-row:hover{background:#FFF0F0}
 .plan-table tbody tr.conflict-row{background:#FFF8E8}
 .plan-table tr.sep-row td{background:var(--red-l);color:var(--red);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:5px 10px}
+.inline-edit-box{display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:8px;align-items:end;background:#fffdf7;border:1px solid #f5d898;border-radius:8px;padding:10px}
+.inline-edit-box label{display:block;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px}
+.inline-edit-box input,.inline-edit-box select{width:100%;min-height:32px;padding:6px 8px;border:1px solid var(--border);border-radius:6px;background:#fff;color:var(--text);font-size:12px}
+.inline-edit-box select[multiple]{height:92px}
+.inline-edit-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.inline-edit-help{grid-column:1/-1;font-size:11px;color:var(--text3)}
 
 /* ── Sem registo chips ── */
 .sep-semreg{padding:8px 12px;background:var(--bg2);border-top:1px dashed var(--border)}
@@ -294,6 +300,10 @@ body{-webkit-text-size-adjust:100%}
   .plan-table tbody td:nth-child(2){grid-row:1;grid-column:2;font-weight:700}
   .plan-table tbody td:last-child{grid-row:1;grid-column:3}
   .plan-table tbody td:nth-child(n+3):not(:last-child){grid-column:1/-1;font-size:11px;color:var(--text2)}
+  .plan-table tbody tr.inline-edit-row{display:block}
+  .plan-table tbody tr.inline-edit-row td{display:block}
+  .inline-edit-box{grid-template-columns:1fr}
+  .inline-edit-box>div{grid-column:1/-1!important}
 }
 
 @media(min-width:600px){
@@ -1070,21 +1080,21 @@ function activeInspNames(){return inspetores.filter(i=>i.estado==='ativo').map(i
 function availableVtDisplays(){return viaturas.filter(v=>v.estado==='disponivel').map(v=>v.display)}
 
 // Returns set of inspetor names already used on a given date (non-ausencia entries)
-function usedOnDate(date){
+function usedOnDate(date, excludeId=null){
   const s=new Set();
-  dados.filter(r=>r.data===date&&r.tipo!=='ausencia').forEach(r=>{getInsps(r).forEach(n=>s.add(n))});
+  dados.filter(r=>r.id!==excludeId&&r.data===date&&r.tipo!=='ausencia').forEach(r=>{getInsps(r).forEach(n=>s.add(n))});
   return s;
 }
 // Returns set of viaturas already used on a given date
-function usedVtOnDate(date){
+function usedVtOnDate(date, excludeId=null){
   const s=new Set();
-  dados.filter(r=>r.data===date&&r.tipo!=='ausencia'&&r.viatura).forEach(r=>s.add(r.viatura));
+  dados.filter(r=>r.id!==excludeId&&r.data===date&&r.tipo!=='ausencia'&&r.viatura).forEach(r=>s.add(r.viatura));
   return s;
 }
 // Returns set of inspetores marked absent on a given date
-function absentOnDate(date){
+function absentOnDate(date, excludeId=null){
   const s=new Set();
-  dados.filter(r=>r.data===date&&r.tipo==='ausencia').forEach(r=>{getInsps(r).forEach(n=>s.add(n))});
+  dados.filter(r=>r.id!==excludeId&&r.data===date&&r.tipo==='ausencia').forEach(r=>{getInsps(r).forEach(n=>s.add(n))});
   return s;
 }
 
@@ -1095,6 +1105,11 @@ let formInsps=[];
 let weekNotes={};
 let readMode=false;
 let inspFilterActive='';
+let inlineEditId=null;
+
+function escHTML(v){
+  return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 
 function renderInspChips(){
   const box=document.getElementById('insp-chips');
@@ -1166,9 +1181,9 @@ function updateFormSelects(){
   const tipo=document.getElementById('f-tipo').value;
   const curVt=document.getElementById('f-vt').value;
 
-  const used=usedOnDate(date);
-  const usedVt=usedVtOnDate(date);
-  const absent=absentOnDate(date);
+  const used=usedOnDate(date,editingId);
+  const usedVt=usedVtOnDate(date,editingId);
+  const absent=absentOnDate(date,editingId);
 
   // Inspetores available = active, not absent, not already used today
   const allActive=activeInspNames();
@@ -1329,6 +1344,7 @@ function renderDaysView(){
 }
 
 function entryHTML(r){
+  if(inlineEditId===r.id)return entryEditHTML(r);
   const brigade=getInsps(r).join(' + ');
   const isAus=r.tipo==='ausencia';
   // NP/PL: usa o campo ref (ex: NP/040/25 ou PL/116/26)
@@ -1341,7 +1357,7 @@ function entryHTML(r){
       <td><span class="pill ${TIPO_C[r.tipo]||'p-au'}">${TIPO_L[r.tipo]||r.tipo}</span></td>
       <td style="font-weight:600">${brigade||'—'}</td>
       <td colspan="5" style="color:#A32D2D;font-size:11px">Ausente</td>
-      <td style="white-space:nowrap"><button class="btn" style="padding:2px 6px;font-size:10px;margin-right:2px" onclick="editR(${r.id})">✏️</button><button class="btn btn-d" style="padding:2px 6px;font-size:10px" onclick="delR(${r.id})">🗑</button></td>
+      <td style="white-space:nowrap"><button class="btn" title="Editar esta entrada" style="padding:2px 6px;font-size:10px;margin-right:2px" onclick="editInlineR(${r.id})">Editar</button><button class="btn btn-d" title="Apagar esta entrada" style="padding:2px 6px;font-size:10px" onclick="delR(${r.id})">Apagar</button></td>
     </tr>`;
   }
   const conflictInsps=getConflictsForRecord(r, dados.filter(x=>x.data===r.data));
@@ -1354,8 +1370,99 @@ function entryHTML(r){
     <td style="color:#555;font-size:11px">${r.materia||'—'}</td>
     <td style="font-size:11px;color:#185FA5;white-space:nowrap">${nppl||'—'}</td>
     <td style="font-size:10px;color:#888">${obs||''}</td>
-    <td style="white-space:nowrap"><button class="btn" style="padding:2px 6px;font-size:10px;margin-right:2px" onclick="editR(${r.id})">✏️</button><button class="btn btn-d" style="padding:2px 6px;font-size:10px" onclick="delR(${r.id})">🗑</button></td>
+    <td style="white-space:nowrap"><button class="btn" title="Editar esta entrada" style="padding:2px 6px;font-size:10px;margin-right:2px" onclick="editInlineR(${r.id})">Editar</button><button class="btn btn-d" title="Apagar esta entrada" style="padding:2px 6px;font-size:10px" onclick="delR(${r.id})">Apagar</button></td>
   </tr>`;
+}
+
+function entryEditHTML(r){
+  const id=r.id;
+  const insps=getInsps(r);
+  return`<tr class="inline-edit-row"><td colspan="8">
+    <div class="inline-edit-box">
+      <div><label>Tipo</label><select id="ie-tipo-${id}">${tipoOptions(r.tipo)}</select></div>
+      <div><label>Inspetores</label><select id="ie-insps-${id}" multiple>${inspOptions(r.data,insps,id)}</select></div>
+      <div><label>Viatura</label><select id="ie-vt-${id}">${vtOptions(r.tipo,r.data,r.viatura||'',id)}</select></div>
+      <div><label>Localidade</label><select id="ie-loc-${id}">${locOptions(r.local||'')}</select></div>
+      <div><label>Matéria</label><input id="ie-mat-${id}" value="${escHTML(r.materia||'')}"></div>
+      <div><label>NP/PL</label><input id="ie-ref-${id}" value="${escHTML(r.ref||'')}"></div>
+      <div style="grid-column:span 2"><label>Observações</label><input id="ie-obs-${id}" value="${escHTML(r.obs||'')}"></div>
+      <div><label>Tipo OE</label><select id="ie-toe-${id}">${toeOptions(r.toe||'')}</select></div>
+      <div class="inline-edit-actions">
+        <button class="btn btn-p" onclick="saveInlineR(${id})">Guardar</button>
+        <button class="btn" onclick="cancelInlineEdit()">Cancelar</button>
+      </div>
+      <div class="inline-edit-help">Dica: no campo inspetores podes selecionar mais do que um nome. No Mac usa Cmd+clique para adicionar/remover nomes.</div>
+    </div>
+  </td></tr>`;
+}
+
+function tipoOptions(selected){
+  return Object.keys(TIPO_L).map(k=>`<option value="${k}"${k===selected?' selected':''}>${TIPO_L[k]}</option>`).join('');
+}
+function inspOptions(date,selected,recordId){
+  const sel=new Set(selected);
+  const used=usedOnDate(date,recordId);
+  const absent=absentOnDate(date,recordId);
+  return activeInspNames().map(n=>{
+    const disabled=!sel.has(n)&&(used.has(n)||absent.has(n));
+    const suffix=disabled?(absent.has(n)?' (ausente)':' (ocupado)'):'';
+    return`<option value="${escHTML(n)}"${sel.has(n)?' selected':''}${disabled?' disabled':''}>${escHTML(n+suffix)}</option>`;
+  }).join('');
+}
+function vtOptions(tipo,date,selected,recordId){
+  const used=usedVtOnDate(date,recordId);
+  const opts=['<option value="">— selecionar —</option>'];
+  viaturas.forEach(v=>{
+    const disabled=v.estado==='inoperacional'||(used.has(v.display)&&v.display!==selected);
+    const suffix=v.estado==='inoperacional'?' 🔧':(used.has(v.display)&&v.display!==selected?' (ocupada)':'');
+    opts.push(`<option value="${escHTML(v.display)}"${v.display===selected?' selected':''}${disabled?' disabled':''}>${escHTML(v.display+suffix)}</option>`);
+  });
+  return opts.join('');
+}
+function locOptions(selected){
+  return ['<option value="">— selecionar —</option>',...getLocalidades().map(n=>`<option value="${escHTML(n)}"${n===selected?' selected':''}>${escHTML(n)}</option>`)].join('');
+}
+function toeOptions(selected){
+  const vals=['','Retalhista','Prestador de serviços','Rest. e bebidas','Transportador','Cfr lista de alvos','Expediente/ E-commerce'];
+  return vals.map(v=>`<option value="${escHTML(v)}"${v===selected?' selected':''}>${v?escHTML(v):'—'}</option>`).join('');
+}
+
+function editInlineR(id){
+  inlineEditId=id;
+  cancelEdit();
+  renderDaysView();
+}
+function cancelInlineEdit(){
+  inlineEditId=null;
+  renderDaysView();
+}
+function selectedInlineInsps(id){
+  return Array.from(document.getElementById('ie-insps-'+id).selectedOptions).map(o=>o.value).filter(Boolean);
+}
+function saveInlineR(id){
+  const r=dados.find(d=>d.id===id);
+  if(!r)return;
+  const tipo=document.getElementById('ie-tipo-'+id).value;
+  const insps=selectedInlineInsps(id);
+  const viatura=document.getElementById('ie-vt-'+id).value;
+  const local=document.getElementById('ie-loc-'+id).value;
+  const materia=document.getElementById('ie-mat-'+id).value;
+  const ref=document.getElementById('ie-ref-'+id).value;
+  const obs=document.getElementById('ie-obs-'+id).value;
+  const toe=document.getElementById('ie-toe-'+id).value;
+  if(!insps.length){flashMsg('Escolhe pelo menos um inspetor.');return;}
+  if(tipo==='operacao'){
+    for(const insp of insps){
+      const restricao=checkRestricao(insp,local);
+      if(restricao){flashMsg(`${restricao.inspetor} só pode desempenhar funções em ${restricao.label}.`);return;}
+    }
+  }
+  pushUndo();
+  Object.assign(r,{tipo,insps:[...insps],i1:insps[0]||'',i2:insps[1]||'',i3:insps[2]||'',viatura,local,materia,ref,obs,toe});
+  inlineEditId=null;
+  updateFormSelects();
+  renderMetrics();renderDaysView();renderCal();renderDist();renderStats();renderHist();saveState();
+  flashMsg('Entrada atualizada.');
 }
 
 // Devolve lista de inspetores de um registo (suporta insps[] novo OU i1/i2/i3 legado)
@@ -1448,7 +1555,7 @@ function addR(){
       if(restricao){al.innerHTML=`<div class="alert alert-warn">⚠️ <strong>${restricao.inspetor}</strong> só pode desempenhar funções em <strong>${restricao.label}</strong>. Localidade selecionada: <em>${locVal||'nenhuma'}</em>.</div>`;return;}
     }
   }
-  if(tipo==='ausencia'&&editingId===null&&absentOnDate(data).has(i1)){al.innerHTML=`<div class="alert alert-warn">${i1} já está marcado como ausente neste dia.</div>`;return;}
+  if(tipo==='ausencia'&&editingId===null&&absentOnDate(data,editingId).has(i1)){al.innerHTML=`<div class="alert alert-warn">${i1} já está marcado como ausente neste dia.</div>`;return;}
   pushUndo();
   if(editingId!==null){
     const idx=dados.findIndex(r=>r.id===editingId);
