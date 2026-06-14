@@ -1,0 +1,54 @@
+name: Tecnolareiras → GitHub Pages
+
+on:
+  push:
+    branches: [claude/tecnolareiras-platform-710jwe]
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: tecnolareiras/package-lock.json
+
+      - name: Install dependencies
+        working-directory: tecnolareiras
+        run: npm install
+
+      - name: Generate Prisma Client
+        working-directory: tecnolareiras
+        run: npx prisma generate
+        env:
+          DATABASE_URL: "postgresql://placeholder:placeholder@localhost:5432/placeholder"
+
+      - name: Remove API routes (not compatible with static export)
+        run: mv tecnolareiras/src/app/api tecnolareiras/src/app/_api_disabled
+
+      - name: Build static export
+        working-directory: tecnolareiras
+        run: npm run build
+        env:
+          GITHUB_PAGES: "true"
+          DATABASE_URL: "postgresql://placeholder:placeholder@localhost:5432/placeholder"
+          AUTH_SECRET: "github-pages-static-build-secret-placeholder-32c"
+          NEXTAUTH_URL: "https://danielmarques196-lgtm.github.io/asae-uovi-planeamento"
+          NEXT_PUBLIC_APP_URL: "https://danielmarques196-lgtm.github.io/asae-uovi-planeamento"
+          NEXT_PUBLIC_APP_NAME: "Tecnolareiras"
+
+      - name: Add .nojekyll (prevents Jekyll from processing _next folder)
+        run: touch tecnolareiras/out/.nojekyll
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: tecnolareiras/out
+          publish_branch: gh-pages

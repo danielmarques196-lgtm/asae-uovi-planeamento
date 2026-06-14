@@ -3,6 +3,14 @@ import Link from "next/link";
 import { Calendar, Clock, ArrowLeft, Share2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
+export function generateStaticParams() {
+  return [
+    "como-escolher-recuperador-de-calor", "pellets-ou-lenha-qual-escolher",
+    "manutencao-anual-recuperador", "instalacao-recuperador-normas",
+    "eficiencia-energetica-rotulo", "lareiras-design-moderno",
+  ].map((slug) => ({ slug }));
+}
+
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

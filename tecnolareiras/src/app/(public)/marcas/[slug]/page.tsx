@@ -3,6 +3,10 @@ import Link from "next/link";
 import { ArrowRight, ExternalLink, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+export function generateStaticParams() {
+  return ["mcz", "jotul", "edilkamin", "piazzetta", "biofire", "romotop"].map((slug) => ({ slug }));
+}
+
 type Props = {
   params: Promise<{ slug: string }>;
 };

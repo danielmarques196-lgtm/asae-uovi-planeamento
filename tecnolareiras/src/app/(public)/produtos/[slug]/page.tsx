@@ -5,6 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/utils";
 
+const productSlugs = [
+  "mcz-suite-comfort-air-12", "jotul-f-370-advance", "edilkamin-plisse-h-air",
+  "piazzetta-p951t", "romotop-heat-r-45-s", "mcz-musa-comfort-air-14",
+  "jotul-f-162", "lareira-suspensa-premium", "churrasqueira-inox-premium",
+  "tubagem-simples-200mm", "kit-limpeza-recuperador", "vedante-ceramico-6mm",
+];
+
+export function generateStaticParams() {
+  return productSlugs.map((slug) => ({ slug }));
+}
+
 type Props = {
   params: Promise<{ slug: string }>;
 };
