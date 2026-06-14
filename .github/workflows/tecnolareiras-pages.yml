@@ -5,10 +5,16 @@ on:
     branches: [claude/tecnolareiras-platform-710jwe]
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,7 +35,7 @@ jobs:
         env:
           DATABASE_URL: "postgresql://placeholder:placeholder@localhost:5432/placeholder"
 
-      - name: Remove API routes (not compatible with static export)
+      - name: Remove API routes (incompatible with static export)
         run: mv tecnolareiras/src/app/api tecnolareiras/src/app/_api_disabled
 
       - name: Build static export
@@ -43,12 +49,21 @@ jobs:
           NEXT_PUBLIC_APP_URL: "https://danielmarques196-lgtm.github.io/asae-uovi-planeamento"
           NEXT_PUBLIC_APP_NAME: "Tecnolareiras"
 
-      - name: Add .nojekyll (prevents Jekyll from processing _next folder)
-        run: touch tecnolareiras/out/.nojekyll
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: tecnolareiras/out
-          publish_branch: gh-pages
+          path: tecnolareiras/out
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
