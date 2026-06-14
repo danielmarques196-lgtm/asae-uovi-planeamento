@@ -587,6 +587,7 @@ body{-webkit-text-size-adjust:100%}
       <select id="d-insp" class="sb" onchange="renderDist()"><option value="">Todos os inspetores</option></select>
     </div>
     <div id="dist-list"></div>
+    <div id="dist-missing"></div>
     <p style="font-size:11px;color:#854F0B;margin-top:12px;padding-top:10px;border-top:1px solid #f0e8d0">
       * <b>José Venâncio</b> e <b>Miguel Rodrigues</b> — kms calculados a partir da Guarda &nbsp;|&nbsp; <b>Marta Ramos</b> — kms calculados a partir da Covilhã.<br>
       Quando algum destes três trabalha no concelho de Castelo Branco, essa deslocação conta 0 km. A base pode ser alterada por dia no formulário.<br>
@@ -895,6 +896,13 @@ const DIST={
   'Vila Velha de R.':40,'Vila Velha de Rod.':40,'Penamacor':70,
   'Celorico da B.':95,'Celorico':95,'Mêda':145,'Meda':145,
   'Proença a Nova':65,'Marvão / Cast. Vide':100,'Guarda / Almeida':115,
+  'Póvoa de Rio de Moinhos':5,'Malpica do Tejo':5,
+  'Juncal do Campo / Salgueiro do Campo':5,'Sobral do Campo':5,
+  'São Vicente da Beira':5,'Vila Fernando (Guarda)':100,
+  'Fernão Joanes / Meios / Trinta':100,'Fig. de cast. Rodrigo / Almeida':148,
+  'Castelo Vide / Marvão':100,'Concelhos Castelo Vide / Marvão':100,'Alpalhão / Gavião / C. Vide':118,
+  'Escalos e Concelho de Idanha-a-Nova':40,
+  'Pedrogão G.':85,
   'Coimbra':160,'Lisboa':220,'Boom Festival':80,
   'Sertã / Oleiros':85,'Fundão / Covilhã':52,'Covilhã / Fundão':52,
   'Alcains / Idanha':40,'Ladoeiro / Idanha':42,'Nisa / V. V. Rodão':72,
@@ -919,6 +927,12 @@ const DIST_GUARDA={
   'Barracão (Guarda)':5,'Vila Fernando (Guarda)':8,
   'Alpedrinha':70,'Ladoeiro':125,'Seia':55,'Penhas da Saúde':30,
   'Vilar Formoso':55,'Fornos de Algodres':30,'Aguiar da Beira':35,
+  'Póvoa de Rio de Moinhos':110,'Malpica do Tejo':110,
+  'Juncal do Campo / Salgueiro do Campo':110,'Sobral do Campo':110,
+  'São Vicente da Beira':110,'Fernão Joanes / Meios / Trinta':15,
+  'Fig. de cast. Rodrigo / Almeida':55,'Castelo Vide / Marvão':195,'Concelhos Castelo Vide / Marvão':195,
+  'Escalos e Concelho de Idanha-a-Nova':120,
+  'Alpalhão / Gavião / C. Vide':183,'Pedrogão G.':150,
   'Almeida / Fig. Castelo Rodr.':55,'Fundão / Covilhã':68,
   'Covilhã / Fundão':68,'Sertã / Oleiros':150,'Sertã / Vila de Rei':160,
   'Celorico / Trancoso':33,'Mação / Gavião':183,'Nisa / V. V. Rodão':152,
@@ -940,6 +954,13 @@ const DIST_COVILHA={
   'Proença a Nova':95,'Guarda (08H)':60,'Covilhã (09H30)':0,
   'Alpedrinha':22,'Ladoeiro':82,'Seia':45,'Penhas da Saúde':8,
   'Vilar Formoso':105,'Fornos de Algodres':80,'Aguiar da Beira':90,
+  'Póvoa de Rio de Moinhos':70,'Malpica do Tejo':70,
+  'Juncal do Campo / Salgueiro do Campo':70,'Sobral do Campo':70,
+  'São Vicente da Beira':70,'Vila Fernando (Guarda)':60,
+  'Fernão Joanes / Meios / Trinta':60,'Fig. de cast. Rodrigo / Almeida':105,
+  'Castelo Vide / Marvão':155,'Concelhos Castelo Vide / Marvão':155,'Alpalhão / Gavião / C. Vide':150,
+  'Escalos e Concelho de Idanha-a-Nova':78,
+  'Pedrogão G.':112,
   'Almeida / Fig. Castelo Rodr.':105,'Fundão / Covilhã':9,
   'Covilhã / Fundão':9,'Sertã / Oleiros':112,'Sertã / Vila de Rei':128,
   'Celorico / Trancoso':70,'Mação / Gavião':150,'Nisa / V. V. Rodão':118,
@@ -988,20 +1009,43 @@ let calY=new Date().getFullYear(),calM=new Date().getMonth();
 let HPAGE=0,PGS=25;
 let nextId=1;
 
+function normalizeLocForDist(loc){
+  return String(loc||'')
+    .replace(/\s+/g,' ')
+    .trim()
+    .replace(/^\(\*+\)\s*/,'')
+    .replace(/\s*\(\*+\)\s*$/,'')
+    .replace(/^Cocelho\s+de\s+/i,'')
+    .replace(/^Concelho\s+de\s+/i,'')
+    .replace(/^Concelhos\s+/i,'')
+    .replace(/Casrelo Branco/gi,'Castelo Branco')
+    .replace(/Casetlo Branco/gi,'Castelo Branco')
+    .replace(/Vilar Fromoso/gi,'Vilar Formoso');
+}
+function canonicalConcelhoForLoc(loc){
+  const clean=normalizeLocForDist(loc);
+  if(!clean)return'';
+  const low=clean.toLowerCase();
+  for(const c of Object.keys(CONCELHOS_UOVI)){
+    if(c.toLowerCase()===low||low.startsWith(c.toLowerCase()))return c;
+  }
+  for(const[c,info] of Object.entries(CONCELHOS_UOVI)){
+    if(info.aliases&&info.aliases.some(a=>a.toLowerCase()===low||low.startsWith(a.toLowerCase())))return c;
+  }
+  return clean;
+}
 // Devolve km (ida+volta) tendo em conta a base de serviço de cada inspetor
 function distLookup(tbl,loc){
-  if(!loc)return null;
+  const clean=normalizeLocForDist(loc);
+  if(!clean)return null;
   // Direct match first
-  if(tbl[loc]!=null)return tbl[loc];
+  if(tbl[clean]!=null)return tbl[clean];
   // Prefix match
-  const k=Object.keys(tbl).find(k=>loc.toLowerCase().startsWith(k.toLowerCase())||k.toLowerCase().startsWith(loc.toLowerCase()));
+  const k=Object.keys(tbl).find(k=>clean.toLowerCase().startsWith(k.toLowerCase())||k.toLowerCase().startsWith(clean.toLowerCase()));
   if(k!=null)return tbl[k];
   // Try mapping via CONCELHOS_UOVI aliases → concelho → dist
-  for(const[c,info] of Object.entries(CONCELHOS_UOVI)){
-    if(info.aliases&&info.aliases.some(a=>a.toLowerCase()===loc.toLowerCase()||loc.toLowerCase().startsWith(a.toLowerCase()))){
-      if(tbl[c]!=null)return tbl[c];
-    }
-  }
+  const concelho=canonicalConcelhoForLoc(clean);
+  if(tbl[concelho]!=null)return tbl[concelho];
   return null;
 }
 const DIST_TBLS={guarda:DIST_GUARDA,covilha:DIST_COVILHA,cb:DIST};
@@ -1012,7 +1056,7 @@ const INSPETORES_BASE={
 };
 const KM_ZERO_CASTELO_BRANCO=new Set(['José Venâncio','Miguel Rodrigues','Marta Ramos']);
 function isConcelhoCasteloBranco(loc){
-  return !!loc&&loc.toLowerCase().trim().startsWith('castelo branco');
+  return canonicalConcelhoForLoc(loc)==='Castelo Branco';
 }
 // date mantido por compatibilidade com chamadas existentes.
 function getInspBase(name,ovr,date){
@@ -1726,6 +1770,13 @@ function renderDist(){
       <div class="dkm">${r.km.toLocaleString()} km</div>
       <div class="dop"><span class="pill p-ex">${r.ops}</span></div>
     </div>`).join('');
+  const ignoreMissing=new Set(['FERIADO','será enviada lista de alvos']);
+  const missing=[...new Set(filt.map(r=>r.local).filter(loc=>loc&&!ignoreMissing.has(normalizeLocForDist(loc))&&distLookup(DIST,loc)==null))].sort();
+  const missEl=document.getElementById('dist-missing');
+  if(missEl)missEl.innerHTML=missing.length?`
+    <div class="alert alert-warn" style="margin-top:10px">
+      <strong>Sem distância definida:</strong> ${missing.map(escHTML).join(', ')}
+    </div>`:'';
 }
 
 // ── HISTÓRICO ─────────────────────────────────────────────────────────────────
