@@ -1,0 +1,9 @@
+User-Agent: *
+Allow: /
+Disallow: /admin
+Disallow: /area-cliente
+Disallow: /api
+Disallow: /login
+Disallow: /registar
+
+Sitemap: https://danielmarques196-lgtm.github.io/asae-uovi-planeamento/sitemap.xml
