@@ -588,8 +588,8 @@ body{-webkit-text-size-adjust:100%}
     </div>
     <div id="dist-list"></div>
     <p style="font-size:11px;color:#854F0B;margin-top:12px;padding-top:10px;border-top:1px solid #f0e8d0">
-      * <b>José Venâncio</b> e <b>Miguel Rodrigues</b> — base na Guarda desde 01/03/2026 (azul) &nbsp;|&nbsp; <b>Marta Ramos</b> — base na Covilhã desde 01/09/2026.<br>
-      Antes dessas datas, todos calculados a partir de Castelo Branco. Pode ser alterado por dia no formulário.<br>
+      * <b>José Venâncio</b> e <b>Miguel Rodrigues</b> — kms calculados a partir da Guarda &nbsp;|&nbsp; <b>Marta Ramos</b> — kms calculados a partir da Covilhã.<br>
+      Quando algum destes três trabalha no concelho de Castelo Branco, essa deslocação conta 0 km. A base pode ser alterada por dia no formulário.<br>
       Distâncias baseadas nos 26 concelhos oficiais da UO VI — Despacho nº 11/2024.
     </p>
   </div>
@@ -902,7 +902,7 @@ const DIST={
   'Almeida / Fig. Castelo Rodr.':148,'Fornos de Algodres':100,
   'Aguiar da Beira':110,'Seia':80,'Penhas da Saúde':65,'Vilar Formoso':150,
 };
-// Base: Guarda (José Venâncio e Miguel Rodrigues, desde 2026-03-01)
+// Base: Guarda (José Venâncio e Miguel Rodrigues)
 const DIST_GUARDA={
   'Almeida':45,'Belmonte':55,'Castelo Branco':100,'Castelo de Vide':195,
   'Celorico da Beira':25,'Covilhã':60,'Figueira de Castelo Rodrigo':70,
@@ -924,7 +924,7 @@ const DIST_GUARDA={
   'Celorico / Trancoso':33,'Mação / Gavião':183,'Nisa / V. V. Rodão':152,
   'Coimbra':140,'Lisboa':300,
 };
-// Base: Covilhã (Marta Ramos, desde 2026-09-01)
+// Base: Covilhã (Marta Ramos)
 const DIST_COVILHA={
   'Almeida':90,'Belmonte':12,'Castelo Branco':60,'Castelo de Vide':155,
   'Celorico da Beira':60,'Covilhã':0,'Figueira de Castelo Rodrigo':120,
@@ -1006,16 +1006,19 @@ function distLookup(tbl,loc){
 }
 const DIST_TBLS={guarda:DIST_GUARDA,covilha:DIST_COVILHA,cb:DIST};
 const INSPETORES_BASE={
-  'José Venâncio':   {base:'guarda',  label:'Guarda',  from:'2025-01-01'},
-  'Miguel Rodrigues':{base:'guarda',  label:'Guarda',  from:'2026-03-01'},
-  'Marta Ramos':     {base:'covilha', label:'Covilhã', from:'2026-09-01'},
+  'José Venâncio':   {base:'guarda',  label:'Guarda'},
+  'Miguel Rodrigues':{base:'guarda',  label:'Guarda'},
+  'Marta Ramos':     {base:'covilha', label:'Covilhã'},
 };
-// date: 'YYYY-MM-DD' string of the record — used to enforce base cutoff dates
+const KM_ZERO_CASTELO_BRANCO=new Set(['José Venâncio','Miguel Rodrigues','Marta Ramos']);
+function isConcelhoCasteloBranco(loc){
+  return !!loc&&loc.toLowerCase().trim().startsWith('castelo branco');
+}
+// date mantido por compatibilidade com chamadas existentes.
 function getInspBase(name,ovr,date){
   if(ovr&&ovr[name])return ovr[name]; // manual override for this entry
   const cfg=INSPETORES_BASE[name];
   if(!cfg)return'cb';
-  if(date&&cfg.from&&date<cfg.from)return'cb'; // before cutoff → CB
   return cfg.base;
 }
 function getKm(loc,inspList,ovr,date){
@@ -1023,12 +1026,20 @@ function getKm(loc,inspList,ovr,date){
   const insps=(inspList||[]).filter(Boolean);
   if(!insps.length)return 0;
   const dists=insps.map(n=>{
-    const base=getInspBase(n,ovr||{},date);
-    const tbl=DIST_TBLS[base]||DIST;
-    const d=distLookup(tbl,loc);
-    return d!=null?d:(distLookup(DIST,loc)||0);
+    return getKmOneWayForInsp(loc,n,ovr,date);
   });
   return Math.round(dists.reduce((a,b)=>a+b,0)/dists.length)*2;
+}
+function getKmOneWayForInsp(loc,n,ovr,date){
+  if(!loc||!n)return 0;
+  if(KM_ZERO_CASTELO_BRANCO.has(n)&&isConcelhoCasteloBranco(loc))return 0;
+  const base=getInspBase(n,ovr||{},date);
+  const tbl=DIST_TBLS[base]||DIST;
+  const d=distLookup(tbl,loc);
+  return d!=null?d:(distLookup(DIST,loc)||0);
+}
+function getKmInsp(loc,n,ovr,date){
+  return getKmOneWayForInsp(loc,n,ovr,date)*2;
 }
 function getKmR(r){return getKm(r.local,getInsps(r),r.baseOverride||{},r.data);}
 function baseNote(inspList,ovr,_date){
@@ -1693,8 +1704,10 @@ function renderDist(){
   const activeNames=activeInspNames();
   const km={},ops={};activeNames.forEach(n=>{km[n]=0;ops[n]=0;});
   filt.forEach(r=>{
-    const k=getKmR(r);
-    getInsps(r).filter(n=>n&&km[n]!==undefined).forEach(n=>{km[n]+=k;ops[n]++;});
+    getInsps(r).filter(n=>n&&km[n]!==undefined).forEach(n=>{
+      km[n]+=getKmInsp(r.local,n,r.baseOverride||{},r.data);
+      ops[n]++;
+    });
   });
   let sorted=activeNames.map(n=>({n,km:km[n],ops:ops[n]})).sort((a,b)=>b.km-a.km);
   if(ins)sorted=sorted.filter(r=>r.n===ins);
@@ -1789,7 +1802,7 @@ function renderBO(){
   document.getElementById('bo-insp-list').innerHTML=inspetores.map(i=>`
     <div class="insp-item">
       <div class="avatar">${i.nome.split(' ').map(w=>w[0]).slice(0,2).join('')}</div>
-      <span style="flex:1;font-weight:500">${i.nome}${i.chefia?`<span style="font-size:10px;color:#185FA5;margin-left:5px;font-weight:normal" title="${i.cargo} — não consta por defeito no planeamento diário">★ ${i.cargo}</span>`:''}${INSPETOR_RESTRICOES[i.nome]?`<span style="font-size:10px;color:#993C1D;margin-left:5px;font-weight:normal" title="${INSPETOR_RESTRICOES[i.nome].label}">⚑ ${INSPETOR_RESTRICOES[i.nome].label}</span>`:''}${INSPETORES_BASE[i.nome]?`<span style="font-size:10px;color:#854F0B;margin-left:4px;font-weight:normal" title="Base de serviço: ${INSPETORES_BASE[i.nome].label} (desde ${INSPETORES_BASE[i.nome].from}) — distâncias calculadas a partir de ${INSPETORES_BASE[i.nome].label}">* base ${INSPETORES_BASE[i.nome].label}</span>`:''}</span>
+      <span style="flex:1;font-weight:500">${i.nome}${i.chefia?`<span style="font-size:10px;color:#185FA5;margin-left:5px;font-weight:normal" title="${i.cargo} — não consta por defeito no planeamento diário">★ ${i.cargo}</span>`:''}${INSPETOR_RESTRICOES[i.nome]?`<span style="font-size:10px;color:#993C1D;margin-left:5px;font-weight:normal" title="${INSPETOR_RESTRICOES[i.nome].label}">⚑ ${INSPETOR_RESTRICOES[i.nome].label}</span>`:''}${INSPETORES_BASE[i.nome]?`<span style="font-size:10px;color:#854F0B;margin-left:4px;font-weight:normal" title="Base de serviço: ${INSPETORES_BASE[i.nome].label} — distâncias calculadas a partir de ${INSPETORES_BASE[i.nome].label}; em Castelo Branco contam 0 km">* base ${INSPETORES_BASE[i.nome].label}</span>`:''}</span>
       <span class="${i.estado==='ativo'?'badge-ok':'badge-off'}">${i.estado==='ativo'?'Ativo':'Inativo'}</span>
       <button class="btn btn-w" style="padding:3px 8px;font-size:11px" onclick="toggleInsp(${i.id})">${i.estado==='ativo'?'Desativar':'Ativar'}</button>
       <button class="btn btn-d" style="padding:3px 8px;font-size:11px" onclick="removeInsp(${i.id})">✕</button>
