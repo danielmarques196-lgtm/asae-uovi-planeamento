@@ -519,9 +519,11 @@ body{-webkit-text-size-adjust:100%}
     <div id="row-campo">
       <div class="g2">
         <div class="fg"><label>Viatura</label><select id="f-vt" onchange="updateFormSelects()"><option value="">— selecionar —</option></select></div>
-        <div class="fg"><label>Localidade</label>
-          <select id="f-loc"><option value="">— selecionar —</option></select>
-        </div>
+        <div class="fg"><label>Concelho</label><input type="text" id="f-loc" list="concelhos-dl" placeholder="Seleciona ou escreve um concelho"><datalist id="concelhos-dl"></datalist></div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label>Localidade</label><input type="text" id="f-localidade" placeholder="ex: Alcains, Soalheira, centro da cidade"></div>
+        <div></div>
       </div>
       <div class="g2">
         <div class="fg"><label>Matéria a fiscalizar</label><input type="text" id="f-mat" list="mat-dl" placeholder="ex: Higiene e Segurança Alimentar"><datalist id="mat-dl"></datalist></div>
@@ -597,7 +599,7 @@ body{-webkit-text-size-adjust:100%}
 <div id="sec-hist" class="section">
   <div class="card">
     <div class="tb" style="margin-bottom:12px">
-      <input type="text" id="hq" class="sb" placeholder="🔍 Inspetor, localidade, matéria, ref..." oninput="renderHist()">
+      <input type="text" id="hq" class="sb" placeholder="🔍 Inspetor, concelho, localidade, matéria, ref..." oninput="renderHist()">
       <select id="ht" class="sb" onchange="renderHist()">
         <option value="">Todos os tipos</option>
         <option value="operacao">Fiscalização</option><option value="expediente">Expediente</option>
@@ -614,7 +616,7 @@ body{-webkit-text-size-adjust:100%}
     </div>
     <div style="overflow-x:auto">
       <table class="hist-table">
-        <thead><tr><th>Data</th><th>Semana</th><th>Tipo</th><th>Brigada</th><th>Viatura</th><th>Localidade</th><th>Matéria</th><th>T.OE</th><th>Ref.</th></tr></thead>
+        <thead><tr><th>Data</th><th>Semana</th><th>Tipo</th><th>Brigada</th><th>Viatura</th><th>Concelho / localidade</th><th>Matéria</th><th>T.OE</th><th>Ref.</th></tr></thead>
         <tbody id="hist-body"></tbody>
       </table>
     </div>
@@ -632,7 +634,7 @@ body{-webkit-text-size-adjust:100%}
   </div>
   <div class="bo-grid">
     <div class="card"><div class="card-title">Operações por inspetor</div><div id="st-insp"></div></div>
-    <div class="card"><div class="card-title">Top localidades</div><div id="st-loc"></div></div>
+    <div class="card"><div class="card-title">Top concelhos</div><div id="st-loc"></div></div>
   </div>
   <div class="card"><div class="card-title">Top matérias fiscalizadas</div><div id="st-mat"></div></div>
   <div class="card"><div class="card-title">Tipo OE</div><div id="st-toe"></div></div>
@@ -701,20 +703,17 @@ body{-webkit-text-size-adjust:100%}
       </div>
     </div>
   </div>
-</div>
 
   <!-- Concelhos UO VI -->
   <div class="card" style="margin-top:14px">
-    <div class="card-title">🗺 Concelhos UO VI — Localidades de fiscalização</div>
-    <p style="font-size:11px;color:#888;margin-bottom:12px">Por defeito usa a sede de cada concelho. Podes definir uma localidade específica (ex: localidade com mais estabelecimentos). Usada no dropdown de planeamento e no cálculo de distâncias.</p>
+    <div class="card-title">🗺 Concelhos UO VI — Kms de fiscalização</div>
+    <p style="font-size:11px;color:#888;margin-bottom:12px">Para cálculo de kms contam apenas os concelhos. Nas entradas podes escolher um concelho da lista ou escrever outro manualmente.</p>
     <div style="overflow-x:auto"><table>
       <thead><tr>
         <th>Concelho</th>
-        <th>Localidade usada no planeamento</th>
         <th>Km CB (i+v)</th>
         <th>Km Guarda (i+v)</th>
         <th>Km Covilhã (i+v)</th>
-        <th></th>
       </tr></thead>
       <tbody id="bo-conc-list"></tbody>
     </table></div>
@@ -874,9 +873,9 @@ const VIATURAS_DEFAULT=[
   {id:9,marca:'Seat',matricula:'Ibiza',display:'Seat Ibiza',estado:'disponivel'},
 ];
 
-// Localidades derivadas dinamicamente dos concelhos UO VI (sede ou override)
-function getLocalidades(){
-  return [...Object.keys(CONCELHOS_UOVI).map(c=>localidadeCustom[c]||CONCELHOS_UOVI[c].sede),'Sede UO VI'].sort();
+// Concelhos usados no planeamento e no cálculo de kms.
+function getConcelhos(){
+  return [...Object.keys(CONCELHOS_UOVI),'Sede UO VI'].sort();
 }
 // ── TABELAS DE DISTÂNCIAS — concelhos oficiais UO VI (Despacho nº 11/2024) ──
 // Formato: Concelho → km em linha reta por estrada (1 sentido)
@@ -1058,18 +1057,14 @@ function weekDates(offsetWeeks=0){
 }
 
 function buildLocSelect(){
-  const sl=document.getElementById('f-loc');
-  const prev=sl.value;
-  sl.innerHTML='<option value="">— selecionar —</option>';
-  getLocalidades().forEach(n=>{
+  const dl=document.getElementById('concelhos-dl');
+  if(!dl)return;
+  dl.innerHTML='';
+  getConcelhos().forEach(n=>{
     const o=document.createElement('option');
-    // Show concelho name alongside custom localidade if different
-    const concelho=Object.keys(CONCELHOS_UOVI).find(c=>(localidadeCustom[c]||CONCELHOS_UOVI[c].sede)===n);
     o.value=n;
-    o.textContent=concelho&&localidadeCustom[concelho]?`${n} (${concelho})`:n;
-    sl.appendChild(o);
+    dl.appendChild(o);
   });
-  if(prev)sl.value=prev;
 }
 
 function init(){
@@ -1088,7 +1083,7 @@ function init(){
   // Matérias datalist
   const dl=document.getElementById('mat-dl');
   [...new Set(dados.filter(r=>r.tipo==='operacao'&&r.materia&&r.materia.length<80).map(r=>r.materia))].sort().forEach(m=>{const o=document.createElement('option');o.value=m;dl.appendChild(o)});
-  // Localidades
+  // Concelhos
   buildLocSelect();
   updateFormSelects();
   renderAll();
@@ -1335,7 +1330,7 @@ function renderDaysView(){
       <th style="width:80px">Situação</th>
       <th style="min-width:160px">Brigada / Inspetores</th>
       <th>Viatura</th>
-      <th>Localidade</th>
+      <th>Concelho / localidade</th>
       <th>Matéria</th>
       <th style="width:80px">NP/PL</th>
       <th style="width:130px">Observações</th>
@@ -1366,6 +1361,7 @@ function entryHTML(r){
   if(inlineEditId===r.id)return entryEditHTML(r);
   const brigade=getInsps(r).join(' + ');
   const isAus=r.tipo==='ausencia';
+  const localTxt=r.localidade?`${escHTML(r.local||'—')}<br><span style="font-size:10px;color:#666">${escHTML(r.localidade)}</span>`:escHTML(r.local||'—');
   // NP/PL: usa o campo ref (ex: NP/040/25 ou PL/116/26)
   const nppl=r.ref||'';
   // Observações: combina toe (tipo OE) + obs
@@ -1385,7 +1381,7 @@ function entryHTML(r){
     <td><span class="pill ${TIPO_C[r.tipo]||'p-ex'}">${TIPO_L[r.tipo]||r.tipo}</span>${conflictInsps.length?'<span class="conflict-badge" style="margin-left:4px">⚡</span>':''}</td>
     <td style="font-weight:600">${brigade||'—'}</td>
     <td style="color:#666;font-size:11px">${r.viatura||'—'}</td>
-    <td style="color:#185FA5">${r.local||'—'}</td>
+    <td style="color:#185FA5">${localTxt}</td>
     <td style="color:#555;font-size:11px">${r.materia||'—'}</td>
     <td style="font-size:11px;color:#185FA5;white-space:nowrap">${nppl||'—'}</td>
     <td style="font-size:10px;color:#888">${obs||''}</td>
@@ -1413,7 +1409,8 @@ function entryEditHTML(r){
       <div><label>Tipo</label><select id="ie-tipo-${id}">${tipoOptions(r.tipo)}</select></div>
       <div><label>Inspetores</label><select id="ie-insps-${id}" multiple>${inspOptions(r.data,insps,id)}</select></div>
       <div><label>Viatura</label><select id="ie-vt-${id}">${vtOptions(r.tipo,r.data,r.viatura||'',id)}</select></div>
-      <div><label>Localidade</label><select id="ie-loc-${id}">${locOptions(r.local||'')}</select></div>
+      <div><label>Concelho</label><input id="ie-loc-${id}" list="concelhos-dl" value="${escHTML(r.local||'')}" placeholder="Seleciona ou escreve"></div>
+      <div><label>Localidade</label><input id="ie-localidade-${id}" value="${escHTML(r.localidade||'')}" placeholder="Nome da localidade"></div>
       <div><label>Matéria</label><input id="ie-mat-${id}" value="${escHTML(r.materia||'')}"></div>
       <div><label>NP/PL</label><input id="ie-ref-${id}" value="${escHTML(r.ref||'')}"></div>
       <div style="grid-column:span 2"><label>Observações</label><input id="ie-obs-${id}" value="${escHTML(r.obs||'')}"></div>
@@ -1451,7 +1448,7 @@ function vtOptions(tipo,date,selected,recordId){
   return opts.join('');
 }
 function locOptions(selected){
-  return ['<option value="">— selecionar —</option>',...getLocalidades().map(n=>`<option value="${escHTML(n)}"${n===selected?' selected':''}>${escHTML(n)}</option>`)].join('');
+  return ['<option value="">— selecionar —</option>',...getConcelhos().map(n=>`<option value="${escHTML(n)}"${n===selected?' selected':''}>${escHTML(n)}</option>`)].join('');
 }
 function toeOptions(selected){
   const vals=['','Retalhista','Prestador de serviços','Rest. e bebidas','Transportador','Cfr lista de alvos','Expediente/ E-commerce'];
@@ -1479,6 +1476,7 @@ function saveInlineR(id){
   const isAus=tipo==='ausencia';
   const viatura=isAus?'':(document.getElementById('ie-vt-'+id)?.value||'');
   const local=isAus?'':(document.getElementById('ie-loc-'+id)?.value||'');
+  const localidade=isAus?'':(document.getElementById('ie-localidade-'+id)?.value||'');
   const materia=isAus?'':(document.getElementById('ie-mat-'+id)?.value||'');
   const ref=isAus?'':(document.getElementById('ie-ref-'+id)?.value||'');
   const obs=isAus?'':(document.getElementById('ie-obs-'+id)?.value||'');
@@ -1491,7 +1489,7 @@ function saveInlineR(id){
     }
   }
   pushUndo();
-  Object.assign(r,{tipo,insps:[...insps],i1:insps[0]||'',i2:insps[1]||'',i3:insps[2]||'',viatura,local,materia,ref,obs,toe});
+  Object.assign(r,{tipo,insps:[...insps],i1:insps[0]||'',i2:insps[1]||'',i3:insps[2]||'',viatura,local,localidade,materia,ref,obs,toe});
   inlineEditId=null;
   updateFormSelects();
   renderMetrics();renderDaysView();renderCal();renderDist();renderStats();renderHist();saveState();
@@ -1574,6 +1572,7 @@ function addR(){
   const i1=insps[0]||'';
   const vt=document.getElementById('f-vt').value;
   const loc=document.getElementById('f-loc').value;
+  const localidade=document.getElementById('f-localidade').value;
   const mat=document.getElementById('f-mat').value;
   const ref=document.getElementById('f-ref').value;
   const obs=document.getElementById('f-obs').value;
@@ -1592,14 +1591,14 @@ function addR(){
   pushUndo();
   if(editingId!==null){
     const idx=dados.findIndex(r=>r.id===editingId);
-    if(idx>=0){dados[idx]={...dados[idx],data,tipo,insps:[...insps],i1:insps[0]||'',i2:insps[1]||'',i3:insps[2]||'',viatura:vt,local:loc,materia:mat,toe,obs,ref,baseOverride:ovr};}
+    if(idx>=0){dados[idx]={...dados[idx],data,tipo,insps:[...insps],i1:insps[0]||'',i2:insps[1]||'',i3:insps[2]||'',viatura:vt,local:loc,localidade,materia:mat,toe,obs,ref,baseOverride:ovr};}
     al.innerHTML=`<div class="alert alert-info">✅ Entrada atualizada: <strong>${TIPO_L[tipo]}</strong> — ${insps.join(' + ')} — ${loc||data}</div>`;
     cancelEdit();
   } else {
-    const r={id:nextId++,data,semana:'novo',tipo,insps:[...insps],i1:insps[0]||'',i2:insps[1]||'',i3:insps[2]||'',viatura:vt,local:loc,materia:mat,toe,obs,ref,baseOverride:ovr};
+    const r={id:nextId++,data,semana:'novo',tipo,insps:[...insps],i1:insps[0]||'',i2:insps[1]||'',i3:insps[2]||'',viatura:vt,local:loc,localidade,materia:mat,toe,obs,ref,baseOverride:ovr};
     dados.push(r);
     al.innerHTML=`<div class="alert alert-info">Entrada adicionada: <strong>${TIPO_L[tipo]}</strong> — ${insps.join(' + ')} — ${loc||data}</div>`;
-    formInsps=[];formOverride={};updateFormSelects();
+    formInsps=[];formOverride={};document.getElementById('f-localidade').value='';updateFormSelects();
   }
   renderMetrics();renderDaysView();renderCal();renderDist();renderStats();saveState();
   setTimeout(()=>al.innerHTML='',4000);
@@ -1620,6 +1619,7 @@ function editR(id){
   setTimeout(()=>{
     const vEl=document.getElementById('f-vt');if(vEl)vEl.value=r.viatura||'';
     const lEl=document.getElementById('f-loc');if(lEl)lEl.value=r.local||'';
+    const locTxt=document.getElementById('f-localidade');if(locTxt)locTxt.value=r.localidade||'';
   },80);
   const t=document.querySelector('.card-title[data-form-title]');if(t)t.textContent='✏️ Editar entrada';
   const ab=document.getElementById('form-add-btn');if(ab){ab.textContent='💾 Guardar alterações';ab.classList.add('btn-w');ab.classList.remove('btn-p');}
@@ -1644,8 +1644,8 @@ function clrForm(){
   formOverride={};
   document.getElementById('f-data').value=today();
   formInsps=[];
-  ['f-tipo','f-vt','f-loc','f-toe'].forEach(id=>{const e=document.getElementById(id);if(e)e.selectedIndex=0;});
-  ['f-mat','f-ref','f-obs'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['f-tipo','f-vt','f-toe'].forEach(id=>{const e=document.getElementById(id);if(e)e.selectedIndex=0;});
+  ['f-loc','f-localidade','f-mat','f-ref','f-obs'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   document.getElementById('form-alert').innerHTML='';
   toggleFields();updateFormSelects();
 }
@@ -1725,7 +1725,7 @@ function renderHist(){
     if(t&&r.tipo!==t)return false;
     if(ins&&!getInsps(r).includes(ins))return false;
     if(yr&&!r.data.startsWith(yr))return false;
-    if(q&&![...getInsps(r),r.local,r.materia,r.ref,r.obs,r.semana].some(v=>(v||'').toLowerCase().includes(q)))return false;
+    if(q&&![...getInsps(r),r.local,r.localidade,r.materia,r.ref,r.obs,r.semana].some(v=>(v||'').toLowerCase().includes(q)))return false;
     return true;
   }).sort((a,b)=>b.data.localeCompare(a.data));
   const tot=rows.length;
@@ -1739,7 +1739,7 @@ function renderHist(){
       <td><span class="pill ${TIPO_C[r.tipo]||'p-ex'}">${TIPO_L[r.tipo]||r.tipo}</span></td>
       <td style="white-space:nowrap">${getInsps(r).join(' + ')}</td>
       <td style="font-size:11px">${r.viatura||'—'}</td>
-      <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.local||'—'}</td>
+      <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.local||'—'}${r.localidade?` · ${r.localidade}`:''}</td>
       <td style="font-size:11px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.materia||'—'}</td>
       <td style="font-size:10px;color:#888">${r.toe||''}</td>
       <td style="font-size:10px;color:#185FA5">${r.ref||''}</td>
@@ -1854,25 +1854,14 @@ function addVt(){
 
 function renderBOConcelhos(){
   const rows=Object.entries(CONCELHOS_UOVI).map(([c,info])=>{
-    const custom=localidadeCustom[c]||'';
-    const display=custom||info.sede;
     const dCB=(DIST[c]||DIST[info.sede]||0)*2;
     const dG=(DIST_GUARDA[c]||DIST_GUARDA[info.sede]||0)*2;
     const dCo=(DIST_COVILHA[c]||DIST_COVILHA[info.sede]||0)*2;
     return`<tr>
       <td style="font-weight:600">${c}</td>
-      <td>
-        <input type="text" value="${display}"
-          style="width:200px;padding:4px 8px;border:1px solid #ddd;border-radius:5px;font-size:12px"
-          placeholder="${info.sede}"
-          onchange="setLocalidade('${c}',this.value)"
-          title="Localidade específica para ${c} (deixar em branco = sede do concelho)">
-        ${custom?`<span style="font-size:10px;color:#854F0B;margin-left:4px">≠ sede</span>`:''}
-      </td>
       <td style="text-align:center;font-size:12px">${dCB?dCB+' km':'—'}</td>
       <td style="text-align:center;font-size:12px;color:#185FA5">${dG?dG+' km':'—'}</td>
       <td style="text-align:center;font-size:12px;color:#3B6D11">${dCo?dCo+' km':'—'}</td>
-      <td>${custom?`<button class="btn btn-d" style="padding:2px 7px;font-size:10px" onclick="clearLocalidade('${c}')">↺ reset</button>`:'<span style="font-size:10px;color:#bbb">sede</span>'}</td>
     </tr>`;
   }).join('');
   document.getElementById('bo-conc-list').innerHTML=rows;
@@ -1977,7 +1966,7 @@ ${activeInsps.map(n=>{
 
 VIATURAS DISPONÍVEIS: ${availVt.join(', ')}
 
-CONCELHOS DA UO VI (localidades válidas para operações):
+CONCELHOS DA UO VI (concelhos válidos para operações e kms):
 ${concelhos.join(', ')}
 
 TIPOS DE ENTRADA:
@@ -1992,7 +1981,7 @@ REGRAS IMPORTANTES:
 2. Cada inspetor só pode ter UMA entrada por dia.
 3. Fernando Santiago APENAS pode fazer operações em Castelo Branco (ou concelhos adjacentes: Alcains, Idanha-a-Nova, etc.) — para tribunal/expediente/formação pode ser onde for.
 4. "Brigada" = dois ou mais inspetores na mesma entrada, mesmo dia, mesma localidade.
-5. Para "aleatoriamente": distribui inspetores SEM entrada nesse dia em brigadas de 2 (ou 1 se número ímpar), atribui localidades variadas dos concelhos da UO VI, e viaturas disponíveis (uma por brigada). Varia as localidades ao longo da semana.
+5. Para "aleatoriamente": distribui inspetores SEM entrada nesse dia em brigadas de 2 (ou 1 se número ímpar), atribui concelhos variados da UO VI, e viaturas disponíveis (uma por brigada). Varia os concelhos ao longo da semana.
 6. Se mencionar "tribunal" ou "diligência" → tipo "tribunal"; se mencionar local → coloca-o em "local".
 7. Se a instrução for ambígua sobre dias específicos, distribui de forma lógica pela semana (seg-sex).
 8. Para operações de campo, atribui uma viatura disponível (roda entre as disponíveis).
@@ -2570,9 +2559,9 @@ function printPlano(){
 }
 
 function expCSV(){
-  const h=['Data','Semana','Tipo','Inspetores','Inspetor 1','Inspetor 2','Inspetor 3','Viatura','Localidade','Matéria','Tipo OE','Ref.','Observações','Km'];
+  const h=['Data','Semana','Tipo','Inspetores','Inspetor 1','Inspetor 2','Inspetor 3','Viatura','Concelho','Localidade','Matéria','Tipo OE','Ref.','Observações','Km'];
   const rows=dados.sort((a,b)=>a.data.localeCompare(b.data)).map(r=>{const _is=getInsps(r);return[
-    r.data,r.semana,TIPO_L[r.tipo]||r.tipo,_is.join(' + '),_is[0]||'',_is[1]||'',_is[2]||'',r.viatura,r.local,r.materia,r.toe,r.ref,r.obs,
+    r.data,r.semana,TIPO_L[r.tipo]||r.tipo,_is.join(' + '),_is[0]||'',_is[1]||'',_is[2]||'',r.viatura,r.local,r.localidade,r.materia,r.toe,r.ref,r.obs,
     r.tipo==='operacao'?getKmR(r):''
   ].map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',');});
   const csv=[h.join(','),...rows].join('\n');
