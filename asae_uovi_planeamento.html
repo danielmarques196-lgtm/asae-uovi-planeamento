@@ -647,8 +647,8 @@ body{-webkit-text-size-adjust:100%}
     <div class="card-title">💾 Gestão de dados</div>
     <p style="font-size:12px;color:#555;margin:6px 0 10px">As tuas alterações (novas entradas, inspetores e viaturas) são <strong>gravadas automaticamente neste navegador</strong> e mantêm-se quando voltas a abrir a app. Os dados ficam apenas neste computador/navegador.</p>
     <div style="margin-bottom:12px;padding:10px;background:#fffbf0;border:1px solid #f0d890;border-radius:8px">
-      <div style="font-size:12px;font-weight:600;margin-bottom:6px">🤖 Chave API Gemini — Preenchimento automático IA</div>
-      <p style="font-size:11px;color:#777;margin-bottom:8px">Precisas de uma chave API da Anthropic para usar o assistente IA. Obtém uma em <a href="https://aistudio.google.com" target="_blank" style="color:#185FA5">aistudio.google.com</a> (gratuita, sem cartão de crédito). A chave começa por <code>AIzaSy</code> e fica guardada apenas neste navegador.</p>
+      <div style="font-size:12px;font-weight:600;margin-bottom:6px">🤖 Chave API Gemini — opcional</div>
+      <p style="font-size:11px;color:#777;margin-bottom:8px">O assistente interpreta localmente pedidos simples, sem chave. A chave Gemini só é usada para pedidos complexos e para ler ficheiros/imagens Kelio. Obtém uma em <a href="https://aistudio.google.com" target="_blank" style="color:#185FA5">aistudio.google.com</a>. A chave começa por <code>AIzaSy</code> e fica guardada apenas neste navegador.</p>
       <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
         <input type="password" id="bo-apikey" placeholder="AIzaSy..." style="flex:1;min-width:200px;padding:6px 10px;border:1px solid #ddd;border-radius:6px;font-size:12px;font-family:monospace">
         <button class="btn btn-p" onclick="saveApiKey()">Guardar chave</button>
@@ -2140,21 +2140,121 @@ function toggleAI(){
   if(!open) document.getElementById('ai-input').focus();
 }
 
-async function processAI(){
-  const apiKey = localStorage.getItem(APIKEY_STORAGE)||'';
-  if(!apiKey){
-    alert('Configura primeiro a chave API da Anthropic no Backoffice → Gestão de dados.');
-    S('bo'); return;
+function normTxt(s){
+  return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\w\s/-]/g,' ').replace(/\s+/g,' ').trim();
+}
+function daysInCurrentFilter(){
+  const ff=document.getElementById('ff').value;
+  const ft=document.getElementById('ft').value;
+  const days=[];
+  let d=new Date(ff+'T12:00:00');
+  while(fmt(d)<=ft){days.push(fmt(d));d.setDate(d.getDate()+1);}
+  return days;
+}
+function aiDateFromText(t,name){
+  const days=daysInCurrentFilter();
+  const low=normTxt(t);
+  const byDow=[
+    ['segunda',0],['2 feira',0],['segunda feira',0],
+    ['terca',1],['3 feira',1],['terca feira',1],
+    ['quarta',2],['4 feira',2],['quarta feira',2],
+    ['quinta',3],['5 feira',3],['quinta feira',3],
+    ['sexta',4],['6 feira',4],['sexta feira',4]
+  ];
+  for(const [needle,idx] of byDow){
+    if(low.includes(needle)&&days[idx])return days[idx];
   }
+  if(low.includes('hoje')){
+    const td=today();
+    if(days.includes(td))return td;
+  }
+  if(low.includes('amanha')||low.includes('amanhã')){
+    const d=new Date(today()+'T12:00:00');d.setDate(d.getDate()+1);
+    const nd=fmt(d);if(days.includes(nd))return nd;
+  }
+  return days.find(d=>!usedOnDate(d,null).has(name)&&!absentOnDate(d,null).has(name))||days[0];
+}
+function aiFindInspectorNames(text){
+  const low=normTxt(text);
+  const found=[];
+  activeInspNames().forEach(n=>{
+    const parts=normTxt(n).split(' ').filter(Boolean);
+    const first=parts[0]||'';
+    const last=parts[parts.length-1]||'';
+    const full=parts.join(' ');
+    if(low.includes(full)||(first&&low.includes(first))||(last&&last.length>3&&low.includes(last))){
+      found.push(n);
+    }
+  });
+  return [...new Set(found)];
+}
+function aiTypeFromText(text){
+  const low=normTxt(text);
+  if(/\b(ferias|falta|baixa|ausencia|ausente|licenca)\b/.test(low))return'ausencia';
+  if(/\b(tribunal|diligencia|diligencias)\b/.test(low))return'tribunal';
+  if(/\b(expediente|sede|e commerce|ecommerce)\b/.test(low))return'expediente';
+  if(/\b(formacao|curso|reuniao)\b/.test(low))return'formacao';
+  if(/\b(fiscalizacao|brigada|operacao|inspecao|inspeccao)\b/.test(low))return'operacao';
+  return'';
+}
+function aiLocalFallback(instruction){
+  const chunks=instruction.split(/\n|;|\.|,/).map(s=>s.trim()).filter(Boolean);
+  const entries=[];
+  const valid=new Set(activeInspNames());
+  chunks.forEach(chunk=>{
+    const tipo=aiTypeFromText(chunk);
+    const names=aiFindInspectorNames(chunk).filter(n=>valid.has(n));
+    if(!tipo||!names.length)return;
+    const data=aiDateFromText(chunk,names[0]);
+    let vals=normalizeEntryByTipo(tipo,{
+      viatura:'',
+      local:'',
+      localidade:'',
+      materia:tipo==='expediente'?'Expediente/E-Commerce':'',
+      ref:'',
+      obs:'',
+      toe:tipo==='expediente'?'Expediente/ E-commerce':'',
+      baseOverride:{}
+    });
+    entries.push({
+      data,tipo,insps:names,viatura:vals.viatura,local:vals.local,localidade:vals.localidade,
+      materia:vals.materia,ref:vals.ref,obs:vals.obs,toe:vals.toe
+    });
+  });
+  return entries;
+}
+
+async function processAI(){
   const instruction = document.getElementById('ai-input').value.trim();
   if(!instruction){ alert('Escreve as instruções para a semana.'); return; }
+  const localEntries=aiLocalFallback(instruction);
 
   const btn = document.getElementById('ai-btn');
   const status = document.getElementById('ai-status');
   btn.disabled = true;
   btn.textContent = '⏳ A processar…';
-  status.textContent = 'A contactar a IA…';
+  status.textContent = 'A interpretar o texto…';
   document.getElementById('ai-preview').style.display = 'none';
+
+  if(localEntries.length){
+    aiEntries=localEntries;
+    renderAIPreview();
+    status.textContent = `✓ ${aiEntries.length} entrada${aiEntries.length===1?'':'s'} gerada${aiEntries.length===1?'':'s'} localmente`;
+    status.style.color = '#3B6D11';
+    btn.disabled = false;
+    btn.textContent = '✨ Gerar planeamento';
+    return;
+  }
+
+  const apiKey = localStorage.getItem(APIKEY_STORAGE)||'';
+  if(!apiKey){
+    status.textContent = 'Não consegui interpretar localmente. Para pedidos complexos, configura uma chave Gemini no Backoffice.';
+    status.style.color = '#854F0B';
+    btn.disabled = false;
+    btn.textContent = '✨ Gerar planeamento';
+    return;
+  }
+  status.textContent = 'A contactar a IA…';
 
   // Build context for the AI
   const ff = document.getElementById('ff').value;
@@ -2243,16 +2343,16 @@ Responde APENAS com um array JSON válido, sem texto, sem markdown, sem \`\`\`. 
 
     // Validate and sanitize entries
     const validInsps = new Set(activeInsps);
-    aiEntries = entries.map(e=>({
-      data: e.data||ff,
-      tipo: ['operacao','expediente','ausencia','formacao','tribunal'].includes(e.tipo)?e.tipo:'operacao',
-      insps: (e.insps||[]).filter(n=>validInsps.has(n)),
-      viatura: e.viatura||'',
-      local: e.local||'',
-      materia: e.materia||'',
-      ref: e.ref||'',
-      obs: e.obs||''
-    })).filter(e=>e.insps.length>0 && e.data>=ff && e.data<=ft);
+    aiEntries = entries.map(e=>{
+      const tipo=['operacao','expediente','ausencia','formacao','tribunal'].includes(e.tipo)?e.tipo:'operacao';
+      const vals=normalizeEntryByTipo(tipo,{
+        viatura:e.viatura||'',local:e.local||'',localidade:e.localidade||'',materia:e.materia||'',
+        ref:e.ref||'',obs:e.obs||'',toe:e.toe||'',baseOverride:{}
+      });
+      return {
+        data:e.data||ff,tipo,insps:(e.insps||[]).filter(n=>validInsps.has(n)),...vals
+      };
+    }).filter(e=>e.insps.length>0 && e.data>=ff && e.data<=ft);
 
     if(!aiEntries.length) throw new Error('Nenhuma entrada válida gerada. Verifica os nomes dos inspetores.');
 
@@ -2306,8 +2406,9 @@ function confirmAI(){
       i1: e.insps[0]||'', i2: e.insps[1]||'', i3: e.insps[2]||'',
       viatura: e.viatura,
       local: e.local,
+      localidade: e.localidade||'',
       materia: e.materia,
-      toe: '', obs: e.obs, ref: e.ref,
+      toe: e.toe||'', obs: e.obs, ref: e.ref,
       baseOverride: {}
     };
     dados.push(r);
@@ -2389,7 +2490,7 @@ function clearKelioFile(){
 async function processKelio(){
   const apiKey = localStorage.getItem(APIKEY_STORAGE)||'';
   if(!apiKey){
-    alert('Configura primeiro a chave API da Anthropic no Backoffice → Gestão de dados.');
+    alert('Para ler ficheiros Kelio é preciso configurar uma chave Gemini no Backoffice → Gestão de dados.');
     S('bo'); return;
   }
   if(!kelioFileData){ alert('Carrega primeiro um ficheiro do Kelio.'); return; }
