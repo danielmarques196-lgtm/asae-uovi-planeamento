@@ -8,6 +8,13 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   console.log("🌱 Seeding database...");
 
+  // Skip if already seeded
+  const existing = await prisma.user.findUnique({ where: { email: "admin@tecnolareiras.pt" } });
+  if (existing) {
+    console.log("✅ Database already seeded, skipping.");
+    return;
+  }
+
   // Admin user
   const adminPassword = await bcrypt.hash("Admin@123456", 12);
   const admin = await prisma.user.upsert({
