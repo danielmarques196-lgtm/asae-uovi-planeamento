@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- codex-published: 2026-06-14T17:35:00+01:00 -->
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
@@ -1381,6 +1380,18 @@ function entryHTML(r){
 function entryEditHTML(r){
   const id=r.id;
   const insps=getInsps(r);
+  if(r.tipo==='ausencia'){
+    return`<tr class="inline-edit-row"><td colspan="8">
+      <div class="inline-edit-box">
+        <div><label>Inspetores ausentes</label><select id="ie-insps-${id}" multiple>${inspOptions(r.data,insps,id)}</select></div>
+        <div class="inline-edit-actions">
+          <button class="btn btn-p" onclick="saveInlineR(${id})">Guardar</button>
+          <button class="btn" onclick="cancelInlineEdit()">Cancelar</button>
+        </div>
+        <div class="inline-edit-help">Ausências só têm nomes de inspetores. No telemóvel, toca e mantém/usa seleção múltipla conforme o navegador permitir.</div>
+      </div>
+    </td></tr>`;
+  }
   return`<tr class="inline-edit-row"><td colspan="8">
     <div class="inline-edit-box">
       <div><label>Tipo</label><select id="ie-tipo-${id}">${tipoOptions(r.tipo)}</select></div>
@@ -1446,14 +1457,16 @@ function selectedInlineInsps(id){
 function saveInlineR(id){
   const r=dados.find(d=>d.id===id);
   if(!r)return;
-  const tipo=document.getElementById('ie-tipo-'+id).value;
+  const tipoEl=document.getElementById('ie-tipo-'+id);
+  const tipo=tipoEl?tipoEl.value:r.tipo;
   const insps=selectedInlineInsps(id);
-  const viatura=document.getElementById('ie-vt-'+id).value;
-  const local=document.getElementById('ie-loc-'+id).value;
-  const materia=document.getElementById('ie-mat-'+id).value;
-  const ref=document.getElementById('ie-ref-'+id).value;
-  const obs=document.getElementById('ie-obs-'+id).value;
-  const toe=document.getElementById('ie-toe-'+id).value;
+  const isAus=tipo==='ausencia';
+  const viatura=isAus?'':(document.getElementById('ie-vt-'+id)?.value||'');
+  const local=isAus?'':(document.getElementById('ie-loc-'+id)?.value||'');
+  const materia=isAus?'':(document.getElementById('ie-mat-'+id)?.value||'');
+  const ref=isAus?'':(document.getElementById('ie-ref-'+id)?.value||'');
+  const obs=isAus?'':(document.getElementById('ie-obs-'+id)?.value||'');
+  const toe=isAus?'':(document.getElementById('ie-toe-'+id)?.value||'');
   if(!insps.length){flashMsg('Escolhe pelo menos um inspetor.');return;}
   if(tipo==='operacao'){
     for(const insp of insps){
