@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ShoppingCart, Heart, Download, CheckCircle, Star, ChevronRight } from "lucide-react";
+import { Heart, Download, CheckCircle, Star, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/utils";
+import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 
 const productSlugs = [
   "mcz-suite-comfort-air-12", "jotul-f-370-advance", "edilkamin-plisse-h-air",
@@ -182,9 +183,14 @@ export default async function ProductPage({ params }: Props) {
 
               {/* Actions */}
               <div className="flex flex-col sm:flex-row gap-3 mb-6">
-                <Button variant="accent" size="lg" className="flex-1">
-                  <ShoppingCart size={18} /> Adicionar ao Carrinho
-                </Button>
+                <AddToCartButton
+                  product={{
+                    id: sampleProduct.sku,
+                    name: sampleProduct.name,
+                    price: sampleProduct.salePrice ?? sampleProduct.price,
+                    slug: sampleProduct.slug,
+                  }}
+                />
                 <Button variant="outline" size="lg" asChild>
                   <Link href="/pedir-orcamento">Pedir Orçamento</Link>
                 </Button>

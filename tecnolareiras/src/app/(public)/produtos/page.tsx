@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Grid, List } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { formatPrice } from "@/lib/utils";
 import { PRODUCT_CATEGORIES } from "@/lib/constants";
+import { ProductCard } from "@/components/cart/product-card";
 
 export const metadata: Metadata = {
   title: "Produtos | Recuperadores, Salamandras e Lareiras",
@@ -62,66 +61,6 @@ const sampleProducts = [
   },
 ];
 
-function ProductCard({ product }: { product: typeof sampleProducts[0] }) {
-  const hasDiscount = product.salePrice !== null && product.salePrice < product.price;
-  const discountPercent = hasDiscount
-    ? Math.round(((product.price - product.salePrice!) / product.price) * 100)
-    : 0;
-
-  return (
-    <Link
-      href={`/produtos/${product.slug}`}
-      className="group bg-white rounded-xl border border-gray-100 hover:border-[#C8980C] hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col"
-    >
-      {/* Image */}
-      <div className="aspect-square bg-gray-50 relative flex items-center justify-center overflow-hidden">
-        <div className="w-24 h-24 bg-gray-200 rounded-xl flex items-center justify-center">
-          <span className="text-3xl">🔥</span>
-        </div>
-        {hasDiscount && (
-          <Badge variant="destructive" className="absolute top-3 left-3">
-            -{discountPercent}%
-          </Badge>
-        )}
-        {product.new && (
-          <Badge variant="accent" className="absolute top-3 right-3">
-            Novo
-          </Badge>
-        )}
-      </div>
-
-      {/* Content */}
-      <div className="p-4 flex flex-col flex-1">
-        <div className="text-xs text-gray-400 mb-1">{product.brand || product.category}</div>
-        <h3 className="font-semibold text-sm text-[#111111] mb-2 line-clamp-2 group-hover:text-[#C8980C] transition-colors leading-tight">
-          {product.name}
-        </h3>
-
-        {product.power && (
-          <div className="text-xs text-gray-500 mb-3">
-            {product.power} · {product.fuel}
-          </div>
-        )}
-
-        <div className="mt-auto flex items-center justify-between">
-          <div>
-            {hasDiscount ? (
-              <div>
-                <span className="text-[#C8980C] font-bold">{formatPrice(product.salePrice)}</span>
-                <span className="text-gray-400 text-xs line-through ml-1">{formatPrice(product.price)}</span>
-              </div>
-            ) : (
-              <span className="text-[#111111] font-bold">{formatPrice(product.price)}</span>
-            )}
-          </div>
-          <div className="text-xs text-gray-400 group-hover:text-[#C8980C] transition-colors">
-            Ver →
-          </div>
-        </div>
-      </div>
-    </Link>
-  );
-}
 
 export default function ProdutosPage() {
   return (

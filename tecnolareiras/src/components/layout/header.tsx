@@ -6,6 +6,7 @@ import { Menu, X, Phone, ShoppingCart, User, Search, ChevronDown } from "lucide-
 import { NAV_LINKS, CONTACT_PHONE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/context/cart-context";
 
 const PRODUCT_MENU = [
   { label: "Recuperadores de Calor", href: "/produtos/recuperadores-de-calor" },
@@ -22,6 +23,7 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [productMenuOpen, setProductMenuOpen] = useState(false);
+  const { itemCount, openCart } = useCart();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -138,15 +140,18 @@ export function Header() {
               >
                 <User size={18} />
               </Link>
-              <Link
-                href="/loja/carrinho"
-                className="p-2 text-gray-600 hover:text-[#C8980C] transition-colors relative hidden md:flex"
+              <button
+                onClick={openCart}
+                className="p-2 text-gray-600 hover:text-[#C8980C] transition-colors relative hidden md:flex cursor-pointer"
+                aria-label="Abrir carrinho"
               >
                 <ShoppingCart size={18} />
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#C8980C] text-white text-xs rounded-full flex items-center justify-center">
-                  0
-                </span>
-              </Link>
+                {itemCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#C8980C] text-white text-xs rounded-full flex items-center justify-center font-bold">
+                    {itemCount > 9 ? "9+" : itemCount}
+                  </span>
+                )}
+              </button>
               <Button variant="accent" size="sm" className="hidden lg:flex" asChild>
                 <Link href="/pedir-orcamento">Pedir Orçamento</Link>
               </Button>
