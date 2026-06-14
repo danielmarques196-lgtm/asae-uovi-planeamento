@@ -1297,6 +1297,16 @@ function toggleFields(){
   const t=document.getElementById('f-tipo').value;
   document.getElementById('row-campo').style.display=(t==='operacao'||t==='formacao')?'block':'none';
 }
+function normalizeEntryByTipo(tipo,vals){
+  const v={...vals};
+  if(tipo==='ausencia'){
+    return {...v,viatura:'',local:'',localidade:'',materia:'',ref:'',obs:'',toe:'',baseOverride:{}};
+  }
+  if(tipo==='expediente'){
+    return {...v,viatura:'',local:'Sede da UO VI',localidade:''};
+  }
+  return v;
+}
 
 function setWeek(offset){
   const[w0,w1]=weekDates(offset);
@@ -1463,23 +1473,24 @@ function entryEditHTML(r){
       </div>
     </td></tr>`;
   }
+  const isExp=r.tipo==='expediente';
   return`<tr class="inline-edit-row"><td colspan="8">
     <div class="inline-edit-box">
-      <div><label>Tipo</label><select id="ie-tipo-${id}">${tipoOptions(r.tipo)}</select></div>
+      <div><label>Tipo</label><select id="ie-tipo-${id}" onchange="toggleInlineTipo(${id})">${tipoOptions(r.tipo)}</select></div>
       <div><label>Inspetores</label><select id="ie-insps-${id}" multiple>${inspOptions(r.data,insps,id)}</select></div>
-      <div><label>Viatura</label><select id="ie-vt-${id}">${vtOptions(r.tipo,r.data,r.viatura||'',id)}</select></div>
-      <div><label>Concelho</label><input id="ie-loc-${id}" list="concelhos-dl" value="${escHTML(r.local||'')}" placeholder="Seleciona ou escreve"></div>
-      <div><label>Localidade</label><input id="ie-localidade-${id}" value="${escHTML(r.localidade||'')}" placeholder="Nome da localidade"></div>
+      <div data-campo-edit="${id}" style="${isExp?'display:none':''}"><label>Viatura</label><select id="ie-vt-${id}">${vtOptions(r.tipo,r.data,r.viatura||'',id)}</select></div>
+      <div data-campo-edit="${id}" style="${isExp?'display:none':''}"><label>Concelho</label><input id="ie-loc-${id}" list="concelhos-dl" value="${escHTML(isExp?'':(r.local||''))}" placeholder="Seleciona ou escreve"></div>
+      <div data-campo-edit="${id}" style="${isExp?'display:none':''}"><label>Localidade</label><input id="ie-localidade-${id}" value="${escHTML(isExp?'':(r.localidade||''))}" placeholder="Nome da localidade"></div>
       <div><label>Matéria</label><input id="ie-mat-${id}" value="${escHTML(r.materia||'')}"></div>
       <div><label>NP/PL</label><input id="ie-ref-${id}" value="${escHTML(r.ref||'')}"></div>
       <div style="grid-column:span 2"><label>Observações</label><input id="ie-obs-${id}" value="${escHTML(r.obs||'')}"></div>
       <div><label>Tipo OE</label><select id="ie-toe-${id}">${toeOptions(r.toe||'')}</select></div>
       <div class="inline-edit-actions">
         <button class="btn btn-p" onclick="saveInlineR(${id})">Guardar</button>
-        <button class="btn btn-w" onclick="fillInlineRandomPair(${id})">🎲 2 inspetores</button>
+        <button id="ie-random-${id}" class="btn btn-w" onclick="fillInlineRandomPair(${id})" style="${isExp?'display:none':''}">🎲 2 inspetores</button>
         <button class="btn" onclick="cancelInlineEdit()">Cancelar</button>
       </div>
-      <div class="inline-edit-help">Dica: no campo inspetores podes selecionar mais do que um nome. No Mac usa Cmd+clique para adicionar/remover nomes.</div>
+      <div class="inline-edit-help">Dica: no campo inspetores podes selecionar mais do que um nome. Expediente fica sempre sem viatura/concelho e no local Sede da UO VI.</div>
     </div>
   </td></tr>`;
 }
@@ -1488,20 +1499,21 @@ function dayAddHTML(date){
   const id='new-'+date;
   return`<tr class="inline-edit-row"><td colspan="8">
     <div class="inline-edit-box">
+      <div><label>Tipo</label><select id="da-tipo-${id}" onchange="toggleDayAddType('${date}')"><option value="operacao">Fiscalização</option><option value="expediente">Expediente</option></select></div>
       <div><label>Inspetores</label><select id="da-insps-${id}" multiple>${inspOptions(date,[],null)}</select></div>
-      <div><label>Viatura</label><select id="da-vt-${id}">${vtOptions('operacao',date,'',null)}</select></div>
-      <div><label>Concelho</label><input id="da-loc-${id}" list="concelhos-dl" placeholder="Seleciona ou escreve"></div>
-      <div><label>Localidade</label><input id="da-localidade-${id}" placeholder="Nome da localidade"></div>
+      <div data-campo-dayadd="${id}"><label>Viatura</label><select id="da-vt-${id}">${vtOptions('operacao',date,'',null)}</select></div>
+      <div data-campo-dayadd="${id}"><label>Concelho</label><input id="da-loc-${id}" list="concelhos-dl" placeholder="Seleciona ou escreve"></div>
+      <div data-campo-dayadd="${id}"><label>Localidade</label><input id="da-localidade-${id}" placeholder="Nome da localidade"></div>
       <div><label>Matéria</label><input id="da-mat-${id}" placeholder="Matéria"></div>
       <div><label>NP/PL</label><input id="da-ref-${id}" placeholder="NP/PL"></div>
       <div style="grid-column:span 2"><label>Observações</label><input id="da-obs-${id}" placeholder="Observações"></div>
       <div><label>Tipo OE</label><select id="da-toe-${id}">${toeOptions('')}</select></div>
       <div class="inline-edit-actions">
-        <button class="btn btn-p" onclick="saveDayAdd('${date}')">Guardar brigada</button>
-        <button class="btn btn-w" onclick="fillDayAddRandomPair('${date}')">🎲 2 inspetores</button>
+        <button class="btn btn-p" onclick="saveDayAdd('${date}')">Guardar entrada</button>
+        <button id="da-random-${id}" class="btn btn-w" onclick="fillDayAddRandomPair('${date}')">🎲 2 inspetores</button>
         <button class="btn" onclick="cancelDayAdd()">Cancelar</button>
       </div>
-      <div class="inline-edit-help">Seleciona dois inspetores para uma brigada. O botão aleatório escolhe apenas inspetores livres neste dia.</div>
+      <div class="inline-edit-help">Fiscalização usa brigada de 2. Expediente pode ter vários inspetores e fica sempre na Sede da UO VI, sem viatura nem concelho.</div>
     </div>
   </td></tr>`;
 }
@@ -1556,6 +1568,20 @@ function showDayAdd(date){
 function cancelDayAdd(){
   dayAddDate=null;
   renderDaysView();
+}
+function toggleDayAddType(date){
+  const id='new-'+date;
+  const tipo=document.getElementById('da-tipo-'+id)?.value||'operacao';
+  document.querySelectorAll(`[data-campo-dayadd="${id}"]`).forEach(el=>{el.style.display=tipo==='expediente'?'none':'';});
+  const random=document.getElementById('da-random-'+id);
+  if(random)random.style.display=tipo==='expediente'?'none':'';
+}
+function toggleInlineTipo(id){
+  const tipo=document.getElementById('ie-tipo-'+id)?.value||'operacao';
+  const hide=tipo==='expediente'||tipo==='ausencia';
+  document.querySelectorAll(`[data-campo-edit="${id}"]`).forEach(el=>{el.style.display=hide?'none':'';});
+  const random=document.getElementById('ie-random-'+id);
+  if(random)random.style.display=tipo==='operacao'?'':'none';
 }
 function selectedInlineInsps(id){
   return Array.from(document.getElementById('ie-insps-'+id).selectedOptions).map(o=>o.value).filter(Boolean);
@@ -1616,28 +1642,35 @@ function autoBrigadasDia(date){
 }
 function saveDayAdd(date){
   const id='new-'+date;
+  const tipo=document.getElementById('da-tipo-'+id)?.value||'operacao';
   const insps=selectedDayAddInsps(id);
-  if(insps.length!==2){flashMsg('Escolhe exatamente 2 inspetores para a brigada.');return;}
-  const local=document.getElementById('da-loc-'+id).value||'';
-  for(const insp of insps){
-    const restricao=checkRestricao(insp,local);
-    if(restricao){flashMsg(`${restricao.inspetor} só pode desempenhar funções em ${restricao.label}.`);return;}
-  }
-  pushUndo();
-  dados.push({
-    id:nextId++,data:date,semana:getSemanaForDate(date),tipo:'operacao',
-    insps:[...insps],i1:insps[0]||'',i2:insps[1]||'',i3:'',
-    viatura:document.getElementById('da-vt-'+id).value||'',
-    local,localidade:document.getElementById('da-localidade-'+id).value||'',
+  if(!insps.length){flashMsg('Escolhe pelo menos um inspetor.');return;}
+  if(tipo==='operacao'&&insps.length!==2){flashMsg('Escolhe exatamente 2 inspetores para a brigada.');return;}
+  let vals=normalizeEntryByTipo(tipo,{
+    viatura:document.getElementById('da-vt-'+id)?.value||'',
+    local:document.getElementById('da-loc-'+id)?.value||'',
+    localidade:document.getElementById('da-localidade-'+id)?.value||'',
     materia:document.getElementById('da-mat-'+id).value||'',
     ref:document.getElementById('da-ref-'+id).value||'',
     obs:document.getElementById('da-obs-'+id).value||'',
     toe:document.getElementById('da-toe-'+id).value||'',
     baseOverride:{}
   });
+  if(tipo==='operacao'){
+    for(const insp of insps){
+      const restricao=checkRestricao(insp,vals.local);
+      if(restricao){flashMsg(`${restricao.inspetor} só pode desempenhar funções em ${restricao.label}.`);return;}
+    }
+  }
+  pushUndo();
+  dados.push({
+    id:nextId++,data:date,semana:getSemanaForDate(date),tipo,
+    insps:[...insps],i1:insps[0]||'',i2:insps[1]||'',i3:'',
+    ...vals
+  });
   dayAddDate=null;
   renderMetrics();renderDaysView();renderCal();renderDist();renderStats();renderHist();saveState();
-  flashMsg('Brigada adicionada.');
+  flashMsg(tipo==='expediente'?'Expediente adicionado.':'Brigada adicionada.');
 }
 function saveInlineR(id){
   const r=dados.find(d=>d.id===id);
@@ -1646,22 +1679,25 @@ function saveInlineR(id){
   const tipo=tipoEl?tipoEl.value:r.tipo;
   const insps=selectedInlineInsps(id);
   const isAus=tipo==='ausencia';
-  const viatura=isAus?'':(document.getElementById('ie-vt-'+id)?.value||'');
-  const local=isAus?'':(document.getElementById('ie-loc-'+id)?.value||'');
-  const localidade=isAus?'':(document.getElementById('ie-localidade-'+id)?.value||'');
-  const materia=isAus?'':(document.getElementById('ie-mat-'+id)?.value||'');
-  const ref=isAus?'':(document.getElementById('ie-ref-'+id)?.value||'');
-  const obs=isAus?'':(document.getElementById('ie-obs-'+id)?.value||'');
-  const toe=isAus?'':(document.getElementById('ie-toe-'+id)?.value||'');
+  let vals=normalizeEntryByTipo(tipo,{
+    viatura:document.getElementById('ie-vt-'+id)?.value||'',
+    local:document.getElementById('ie-loc-'+id)?.value||'',
+    localidade:document.getElementById('ie-localidade-'+id)?.value||'',
+    materia:isAus?'':(document.getElementById('ie-mat-'+id)?.value||''),
+    ref:isAus?'':(document.getElementById('ie-ref-'+id)?.value||''),
+    obs:isAus?'':(document.getElementById('ie-obs-'+id)?.value||''),
+    toe:isAus?'':(document.getElementById('ie-toe-'+id)?.value||''),
+    baseOverride:r.baseOverride||{}
+  });
   if(!insps.length){flashMsg('Escolhe pelo menos um inspetor.');return;}
   if(tipo==='operacao'){
     for(const insp of insps){
-      const restricao=checkRestricao(insp,local);
+      const restricao=checkRestricao(insp,vals.local);
       if(restricao){flashMsg(`${restricao.inspetor} só pode desempenhar funções em ${restricao.label}.`);return;}
     }
   }
   pushUndo();
-  Object.assign(r,{tipo,insps:[...insps],i1:insps[0]||'',i2:insps[1]||'',i3:insps[2]||'',viatura,local,localidade,materia,ref,obs,toe});
+  Object.assign(r,{tipo,insps:[...insps],i1:insps[0]||'',i2:insps[1]||'',i3:insps[2]||'',...vals});
   inlineEditId=null;
   updateFormSelects();
   renderMetrics();renderDaysView();renderCal();renderDist();renderStats();renderHist();saveState();
@@ -1742,34 +1778,36 @@ function addR(){
   const tipo=document.getElementById('f-tipo').value;
   const insps=[...formInsps];
   const i1=insps[0]||'';
-  const vt=document.getElementById('f-vt').value;
-  const loc=document.getElementById('f-loc').value;
-  const localidade=document.getElementById('f-localidade').value;
-  const mat=document.getElementById('f-mat').value;
-  const ref=document.getElementById('f-ref').value;
-  const obs=document.getElementById('f-obs').value;
-  const toe=document.getElementById('f-toe').value;
+  const vals=normalizeEntryByTipo(tipo,{
+    viatura:document.getElementById('f-vt').value,
+    local:document.getElementById('f-loc').value,
+    localidade:document.getElementById('f-localidade').value,
+    materia:document.getElementById('f-mat').value,
+    ref:document.getElementById('f-ref').value,
+    obs:document.getElementById('f-obs').value,
+    toe:document.getElementById('f-toe').value,
+    baseOverride:ovr
+  });
   const al=document.getElementById('form-alert');
   al.innerHTML='';
   if(!data||!insps.length){al.innerHTML='<div class="alert alert-warn">Preenche a data e adiciona pelo menos um inspetor.</div>';return;}
   if(tipo==='operacao'){
-    const locVal=document.getElementById('f-loc').value;
     for(const insp of insps){
-      const restricao=checkRestricao(insp,locVal);
-      if(restricao){al.innerHTML=`<div class="alert alert-warn">⚠️ <strong>${restricao.inspetor}</strong> só pode desempenhar funções em <strong>${restricao.label}</strong>. Localidade selecionada: <em>${locVal||'nenhuma'}</em>.</div>`;return;}
+      const restricao=checkRestricao(insp,vals.local);
+      if(restricao){al.innerHTML=`<div class="alert alert-warn">⚠️ <strong>${restricao.inspetor}</strong> só pode desempenhar funções em <strong>${restricao.label}</strong>. Localidade selecionada: <em>${vals.local||'nenhuma'}</em>.</div>`;return;}
     }
   }
   if(tipo==='ausencia'&&editingId===null&&absentOnDate(data,editingId).has(i1)){al.innerHTML=`<div class="alert alert-warn">${i1} já está marcado como ausente neste dia.</div>`;return;}
   pushUndo();
   if(editingId!==null){
     const idx=dados.findIndex(r=>r.id===editingId);
-    if(idx>=0){dados[idx]={...dados[idx],data,tipo,insps:[...insps],i1:insps[0]||'',i2:insps[1]||'',i3:insps[2]||'',viatura:vt,local:loc,localidade,materia:mat,toe,obs,ref,baseOverride:ovr};}
-    al.innerHTML=`<div class="alert alert-info">✅ Entrada atualizada: <strong>${TIPO_L[tipo]}</strong> — ${insps.join(' + ')} — ${loc||data}</div>`;
+    if(idx>=0){dados[idx]={...dados[idx],data,tipo,insps:[...insps],i1:insps[0]||'',i2:insps[1]||'',i3:insps[2]||'',...vals};}
+    al.innerHTML=`<div class="alert alert-info">✅ Entrada atualizada: <strong>${TIPO_L[tipo]}</strong> — ${insps.join(' + ')} — ${vals.local||data}</div>`;
     cancelEdit();
   } else {
-    const r={id:nextId++,data,semana:'novo',tipo,insps:[...insps],i1:insps[0]||'',i2:insps[1]||'',i3:insps[2]||'',viatura:vt,local:loc,localidade,materia:mat,toe,obs,ref,baseOverride:ovr};
+    const r={id:nextId++,data,semana:'novo',tipo,insps:[...insps],i1:insps[0]||'',i2:insps[1]||'',i3:insps[2]||'',...vals};
     dados.push(r);
-    al.innerHTML=`<div class="alert alert-info">Entrada adicionada: <strong>${TIPO_L[tipo]}</strong> — ${insps.join(' + ')} — ${loc||data}</div>`;
+    al.innerHTML=`<div class="alert alert-info">Entrada adicionada: <strong>${TIPO_L[tipo]}</strong> — ${insps.join(' + ')} — ${vals.local||data}</div>`;
     formInsps=[];formOverride={};document.getElementById('f-localidade').value='';updateFormSelects();
   }
   renderMetrics();renderDaysView();renderCal();renderDist();renderStats();saveState();
