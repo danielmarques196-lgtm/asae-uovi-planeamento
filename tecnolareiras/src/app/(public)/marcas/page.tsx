@@ -3,65 +3,61 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Marcas | As Melhores Marcas de Aquecimento",
+  title: "Marcas | Fogo Montanha, Solzaima, Metlor, Chamilar, C&A Chama",
   description:
-    "Descubra as marcas que representamos: MCZ, Jøtul, Edilkamin, Piazzetta e muitas mais. Parceiros exclusivos das melhores marcas europeias.",
+    "Representantes oficiais das principais marcas portuguesas de recuperadores de calor, salamandras e lareiras: Fogo Montanha, Solzaima, Metlor, Chamilar e C&A Chama.",
 };
 
 const brandDetails = [
   {
-    slug: "mcz",
-    name: "MCZ",
-    country: "Itália",
-    description: "Fundada em 1987, a MCZ é uma das marcas italianas mais inovadoras no setor das salamandras a pellets e lareiras. Reconhecida internacionalmente pela sua tecnologia avançada e design sofisticado.",
-    categories: ["Salamandras a Pellets", "Recuperadores de Calor", "Lareiras a Gás"],
-    founded: "1987",
-    emoji: "🇮🇹",
-  },
-  {
-    slug: "jotul",
-    name: "Jøtul",
-    country: "Noruega",
-    description: "A Jøtul é a mais antiga fabricante de salamandras e lareiras do mundo, fundada em 1853 na Noruega. Os seus produtos são sinónimo de qualidade escandinava, durabilidade e design atemporal.",
-    categories: ["Salamandras a Lenha", "Lareiras", "Recuperadores de Calor"],
-    founded: "1853",
-    emoji: "🇳🇴",
-  },
-  {
-    slug: "edilkamin",
-    name: "Edilkamin",
-    country: "Itália",
-    description: "A Edilkamin é especialista em aquecimento a pellets desde 1986. Os seus produtos destacam-se pela tecnologia patenteada e pelo compromisso com a sustentabilidade e eficiência energética.",
-    categories: ["Salamandras a Pellets", "Recuperadores de Calor", "Caldeiras a Pellets"],
-    founded: "1986",
-    emoji: "🇮🇹",
-  },
-  {
-    slug: "piazzetta",
-    name: "Piazzetta",
-    country: "Itália",
-    description: "A Piazzetta destaca-se pelo design exclusivo e pela qualidade premium dos seus produtos. Especialista em recuperadores de calor a pellets com tecnologia de combustão avançada.",
-    categories: ["Recuperadores de Calor", "Salamandras a Pellets", "Lareiras"],
-    founded: "1980",
-    emoji: "🇮🇹",
-  },
-  {
-    slug: "biofire",
-    name: "Biofire",
+    slug: "fogo-montanha",
+    name: "Fogo Montanha",
     country: "Portugal",
-    description: "Marca portuguesa especializada em lareiras e churrasqueiras em aço inoxidável. Os produtos Biofire são fabricados com os mais elevados padrões de qualidade e acabamento.",
-    categories: ["Lareiras", "Churrasqueiras", "Lareiras Suspensas"],
-    founded: "2005",
-    emoji: "🇵🇹",
+    description: "Marca portuguesa de referência na produção de recuperadores de calor e salamandras a lenha e pellets. Combina inovação tecnológica e design contemporâneo, com gamas Classic, Vision e Square para todos os espaços.",
+    categories: ["Recuperadores de Calor", "Salamandras a Lenha", "Recuperadores a Pellets"],
+    founded: "1993",
+    emoji: "🔥",
+    highlight: "Gama Classic · Vision · Square",
   },
   {
-    slug: "romotop",
-    name: "Romotop",
-    country: "República Checa",
-    description: "A Romotop é um dos maiores fabricantes europeus de recuperadores de calor a lenha. Os seus produtos destacam-se pela solidez da construção e pela eficiência energética superior.",
-    categories: ["Recuperadores de Calor", "Salamandras a Lenha"],
-    founded: "1993",
-    emoji: "🇨🇿",
+    slug: "solzaima",
+    name: "Solzaima",
+    country: "Portugal",
+    description: "Fundada em 1978, a Solzaima é líder nacional em soluções de aquecimento a biomassa. Especialista em recuperadores a lenha e pellets para aquecimento local e central, com certificação TÜV e classes energéticas A+ e A++.",
+    categories: ["Recuperadores de Calor", "Aquecimento Central", "Salamandras a Pellets"],
+    founded: "1978",
+    emoji: "🌟",
+    highlight: "Linha Mytho · Zaima · Atlantic",
+  },
+  {
+    slug: "metlor",
+    name: "Metlor",
+    country: "Portugal",
+    description: "Fabricante português com décadas de experiência em recuperadores de calor de alta potência. A gama Quina e Elos destaca-se pela robustez e capacidade de aquecimento de grandes espaços, com soluções até 25 kW.",
+    categories: ["Recuperadores de Calor", "Aquecimento Central", "Salamandras a Lenha"],
+    founded: "1980",
+    emoji: "⚙️",
+    highlight: "Linha Quina · Elos · LLAR",
+  },
+  {
+    slug: "ca-chama",
+    name: "C&A Chama",
+    country: "Portugal",
+    description: "Marca portuguesa que une design moderno com tecnologia eficiente. Os recuperadores Cristal em ferro fundido e os modelos de aquecimento central W4 distinguem-se pela elegância e durabilidade.",
+    categories: ["Recuperadores de Calor", "Ferro Fundido", "Aquecimento Central"],
+    founded: "2000",
+    emoji: "🏆",
+    highlight: "Linha Cristal · W4 Central",
+  },
+  {
+    slug: "chamilar",
+    name: "Chamilar",
+    country: "Portugal",
+    description: "Com 35 anos de experiência na importação e distribuição de energias renováveis, a Chamilar oferece salamandras, recuperadores a pellets e soluções de ar condicionado, bomba de calor e solar.",
+    categories: ["Salamandras a Lenha", "Recuperadores a Pellets", "Energias Renováveis"],
+    founded: "1989",
+    emoji: "🌱",
+    highlight: "Linha Petit Cube · Zefiro · Kami",
   },
 ];
 
@@ -78,11 +74,19 @@ export default function MarcasPage() {
           </nav>
           <h1 className="text-4xl font-bold text-white mb-3">As Nossas Marcas</h1>
           <p className="text-gray-300 max-w-xl">
-            Parceiros exclusivos das melhores marcas europeias de aquecimento a biomassa.
-            Qualidade e inovação ao serviço do seu conforto.
+            Representantes oficiais das principais marcas portuguesas de recuperadores de calor,
+            salamandras e lareiras. Equipamentos fabricados em Portugal, com qualidade e garantia.
           </p>
         </div>
       </section>
+
+      {/* Made in Portugal badge */}
+      <div className="bg-[#C8980C]">
+        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center gap-3">
+          <span className="text-white font-bold text-sm">🇵🇹 Todas as marcas são de origem portuguesa</span>
+          <span className="text-white/70 text-sm">— fabricadas em Portugal, com certificação europeia</span>
+        </div>
+      </div>
 
       {/* Brands Grid */}
       <section className="py-16 bg-gray-50">
@@ -120,6 +124,7 @@ export default function MarcasPage() {
                       </span>
                     ))}
                   </div>
+                  <div className="mt-3 text-xs text-[#C8980C] font-medium">{brand.highlight}</div>
                 </div>
               </Link>
             ))}
