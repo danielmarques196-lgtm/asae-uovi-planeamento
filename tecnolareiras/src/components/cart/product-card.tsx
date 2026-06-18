@@ -1,106 +1,100 @@
 "use client";
 
-import React, { useState } from "react";
 import Link from "next/link";
-import { ShoppingCart, Check } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { ShoppingCart, ArrowRight } from "lucide-react";
+import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { formatPrice } from "@/lib/utils";
-import { useCart } from "@/context/cart-context";
-import { toast } from "sonner";
+import type { Product } from "@/lib/products";
 
-type Product = {
-  id: string;
-  slug: string;
-  name: string;
-  category: string;
-  brand: string | null;
-  price: number;
-  salePrice: number | null;
-  image: null;
-  power: string | null;
-  fuel: string | null;
-  featured: boolean;
-  new: boolean;
+type Props = {
+  product: Product;
 };
 
-export function ProductCard({ product }: { product: Product }) {
-  const { addItem, openCart } = useCart();
-  const [added, setAdded] = useState(false);
-
-  const hasDiscount = product.salePrice !== null && product.salePrice < product.price;
-  const discountPercent = hasDiscount
-    ? Math.round(((product.price - product.salePrice!) / product.price) * 100)
-    : 0;
-  const finalPrice = product.salePrice ?? product.price;
-
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    addItem({ id: product.id, name: product.name, price: finalPrice, slug: product.slug });
-    setAdded(true);
-    toast.success(`${product.name} adicionado ao carrinho`, {
-      action: { label: "Ver Carrinho", onClick: openCart },
-    });
-    setTimeout(() => setAdded(false), 2000);
-  };
+export function ProductCard({ product }: Props) {
+  const price = product.salePrice ?? product.price;
 
   return (
-    <div className="group bg-white rounded-xl border border-gray-100 hover:border-[#C8980C] hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col">
-      {/* Image */}
-      <Link href={`/produtos/${product.slug}`} className="block">
-        <div className="aspect-square bg-gray-50 relative flex items-center justify-center overflow-hidden">
-          <div className="w-24 h-24 bg-gray-200 rounded-xl flex items-center justify-center">
-            <span className="text-3xl">🔥</span>
-          </div>
-          {hasDiscount && (
-            <Badge variant="destructive" className="absolute top-3 left-3">
-              -{discountPercent}%
-            </Badge>
-          )}
+    <div className="group bg-white border border-[#E5DDD0] rounded-2xl overflow-hidden hover:border-[#C8980C] hover:shadow-md transition-all duration-200 flex flex-col">
+      {/* Image area */}
+      <div className="relative bg-[#F7F2EA] aspect-[4/3] flex items-center justify-center">
+        <span className="text-6xl">🔥</span>
+        <div className="absolute top-3 left-3 flex gap-2">
           {product.new && (
-            <Badge variant="accent" className="absolute top-3 right-3">
-              Novo
-            </Badge>
+            <span className="px-2 py-0.5 bg-[#C8980C] text-white text-xs font-semibold rounded-full">
+              Novidade
+            </span>
+          )}
+          {product.featured && !product.new && (
+            <span className="px-2 py-0.5 bg-[#1C1C1C] text-white text-xs font-semibold rounded-full">
+              Destaque
+            </span>
+          )}
+          {product.salePrice !== undefined && (
+            <span className="px-2 py-0.5 bg-red-500 text-white text-xs font-semibold rounded-full">
+              Promoção
+            </span>
           )}
         </div>
-      </Link>
+        <span className="absolute top-3 right-3 px-2 py-0.5 bg-white/80 text-[#737373] text-xs rounded-full border border-[#E5DDD0]">
+          {product.categoryName}
+        </span>
+      </div>
 
       {/* Content */}
-      <div className="p-4 flex flex-col flex-1">
-        <div className="text-xs text-gray-400 mb-1">{product.brand || product.category}</div>
-        <Link href={`/produtos/${product.slug}`}>
-          <h3 className="font-semibold text-sm text-[#111111] mb-2 line-clamp-2 group-hover:text-[#C8980C] transition-colors leading-tight">
-            {product.name}
-          </h3>
-        </Link>
+      <div className="flex flex-col flex-1 p-4">
+        <div className="mb-1">
+          <span className="text-xs font-semibold text-[#C8980C] uppercase tracking-wide">{product.brand}</span>
+        </div>
+        <h3 className="font-semibold text-[#1C1C1C] mb-2 leading-snug text-sm line-clamp-2">
+          {product.name}
+        </h3>
 
-        {product.power && (
-          <div className="text-xs text-gray-500 mb-3">
-            {product.power} · {product.fuel}
-          </div>
-        )}
+        {/* Specs chips */}
+        <div className="flex flex-wrap gap-1.5 mb-3">
+          {product.fuel && (
+            <span className="px-2 py-0.5 bg-[#F7F2EA] text-[#737373] text-xs rounded-md border border-[#E5DDD0]">
+              {product.fuel}
+            </span>
+          )}
+          {product.power && (
+            <span className="px-2 py-0.5 bg-[#F7F2EA] text-[#737373] text-xs rounded-md border border-[#E5DDD0]">
+              {product.power}
+            </span>
+          )}
+          {product.energyLabel && (
+            <span className="px-2 py-0.5 bg-[#C8980C]/10 text-[#C8980C] text-xs font-semibold rounded-md">
+              {product.energyLabel}
+            </span>
+          )}
+        </div>
 
-        <div className="mt-auto flex items-center justify-between gap-2">
-          <div>
-            {hasDiscount ? (
-              <div>
-                <span className="text-[#C8980C] font-bold">{formatPrice(product.salePrice)}</span>
-                <span className="text-gray-400 text-xs line-through ml-1">{formatPrice(product.price)}</span>
-              </div>
-            ) : (
-              <span className="text-[#111111] font-bold">{formatPrice(product.price)}</span>
+        {/* Price */}
+        <div className="mt-auto">
+          <div className="flex items-baseline gap-2 mb-3">
+            <span className="text-xl font-bold text-[#1C1C1C]">{formatPrice(price)}</span>
+            {product.salePrice !== undefined && (
+              <span className="text-sm text-[#737373] line-through">{formatPrice(product.price)}</span>
             )}
           </div>
-          <button
-            onClick={handleAddToCart}
-            className={`p-2 rounded-lg border transition-all duration-200 shrink-0 ${
-              added
-                ? "bg-green-50 border-green-300 text-green-600"
-                : "border-gray-200 text-gray-400 hover:border-[#C8980C] hover:text-[#C8980C]"
-            }`}
-            title="Adicionar ao carrinho"
-          >
-            {added ? <Check size={16} /> : <ShoppingCart size={16} />}
-          </button>
+
+          {/* Actions */}
+          <div className="flex gap-2">
+            <Link
+              href={`/produtos/${product.slug}`}
+              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 border border-[#E5DDD0] text-[#1C1C1C] text-sm font-medium rounded-xl hover:border-[#C8980C] hover:text-[#C8980C] transition-colors"
+            >
+              Ver Produto <ArrowRight size={14} />
+            </Link>
+            <AddToCartButton
+              product={{
+                id: product.sku,
+                name: product.name,
+                price,
+                slug: product.slug,
+              }}
+              className="!flex-none px-3 py-2 !rounded-xl"
+            />
+          </div>
         </div>
       </div>
     </div>
