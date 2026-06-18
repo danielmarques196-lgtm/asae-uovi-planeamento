@@ -1,98 +1,83 @@
-import React from "react";
 import Link from "next/link";
-import { Phone, Mail, MapPin, Share2, Camera, Play, Clock } from "lucide-react";
-import { FOOTER_LINKS, CONTACT_EMAIL, CONTACT_PHONE, CONTACT_ADDRESS, OPENING_HOURS, COMPANY_FOUNDED } from "@/lib/constants";
+import { Flame, Phone, Mail, MapPin, Clock, Facebook } from "lucide-react";
+import {
+  CONTACT_PHONE,
+  CONTACT_PHONE_DISPLAY,
+  CONTACT_EMAIL,
+  CONTACT_ADDRESS,
+  OPENING_HOURS,
+  COMPANY_FOUNDED,
+  PRODUCT_CATEGORIES,
+  FOOTER_LINKS,
+} from "@/lib/constants";
 
 export function Footer() {
-  const currentYear = new Date().getFullYear();
+  const year = new Date().getFullYear();
+
+  const productLinks = PRODUCT_CATEGORIES.slice(0, 6).map(cat => ({
+    label: cat.name,
+    href: `/produtos?categoria=${cat.slug}`,
+  }));
 
   return (
-    <footer className="bg-[#111111] text-white">
-      {/* CTA Band */}
-      <div className="bg-[#C8980C]">
-        <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div>
-            <h3 className="text-white font-bold text-xl">Precisa de um orçamento?</h3>
-            <p className="text-white/80 text-sm mt-1">
-              Contacte-nos e obtenha uma proposta personalizada sem compromisso.
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <Link
-              href="/pedir-orcamento"
-              className="bg-white text-[#111111] px-6 py-2.5 rounded-lg font-semibold text-sm hover:bg-gray-100 transition-colors"
-            >
-              Pedir Orçamento
-            </Link>
-            <Link
-              href="/contactos"
-              className="border border-white text-white px-6 py-2.5 rounded-lg font-semibold text-sm hover:bg-white/10 transition-colors"
-            >
-              Contactar
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Main footer */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
+    <footer className="bg-[#1C1C1C] text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-          {/* Brand */}
-          <div className="lg:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-9 h-9 flex-shrink-0">
-                <circle cx="20" cy="20" r="20" fill="#CC3300"/>
-                <text x="20" y="26" textAnchor="middle" fill="white" fontSize="14" fontWeight="800" fontFamily="Arial, sans-serif">TL</text>
-              </svg>
-              <span className="font-bold text-xl">Tecnolareiras</span>
-            </div>
-            <p className="text-gray-400 text-sm leading-relaxed mb-4">
-              Especialistas em recuperadores de calor, salamandras, lareiras, ar condicionado e energia solar.
-              Em Entroncamento desde {COMPANY_FOUNDED}.
+          {/* Brand column */}
+          <div>
+            <Link href="/" className="flex items-center gap-2 mb-4">
+              <div className="w-9 h-9 bg-[#C8980C] rounded-lg flex items-center justify-center">
+                <Flame size={18} className="text-white" />
+              </div>
+              <span className="font-bold text-lg tracking-tight">Tecnolareiras</span>
+            </Link>
+            <p className="text-sm text-[#A0A0A0] leading-relaxed mb-5">
+              Especialistas em recuperadores de calor, salamandras e lareiras desde {COMPANY_FOUNDED}. Venda, instalação e manutenção profissional.
             </p>
-            <div className="flex gap-3">
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center hover:bg-[#C8980C] transition-colors"
-                aria-label="Facebook"
-              >
-                <Share2 size={14} />
-              </a>
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center hover:bg-[#C8980C] transition-colors"
-                aria-label="Instagram"
-              >
-                <Camera size={14} />
-              </a>
-              <a
-                href="https://youtube.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center hover:bg-[#C8980C] transition-colors"
-                aria-label="YouTube"
-              >
-                <Play size={14} />
-              </a>
-            </div>
+            <a
+              href="https://facebook.com/tecnolareiras"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm text-[#A0A0A0] hover:text-[#C8980C] transition-colors"
+            >
+              <Facebook size={16} />
+              Facebook
+            </a>
           </div>
 
-          {/* Empresa */}
+          {/* Products column */}
           <div>
-            <h4 className="font-semibold text-sm uppercase tracking-wider text-gray-300 mb-4">
-              Empresa
-            </h4>
+            <h3 className="font-semibold text-sm uppercase tracking-wider text-[#C8980C] mb-4">Produtos</h3>
             <ul className="space-y-2.5">
-              {FOOTER_LINKS.empresa.map((link) => (
+              {productLinks.map(link => (
                 <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-gray-400 text-sm hover:text-[#C8980C] transition-colors"
-                  >
+                  <Link href={link.href} className="text-sm text-[#A0A0A0] hover:text-white transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link href="/produtos" className="text-sm text-[#C8980C] hover:text-[#E0AA14] transition-colors font-medium">
+                  Ver todos →
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Empresa column */}
+          <div>
+            <h3 className="font-semibold text-sm uppercase tracking-wider text-[#C8980C] mb-4">Empresa</h3>
+            <ul className="space-y-2.5">
+              {FOOTER_LINKS.empresa.map(link => (
+                <li key={link.href}>
+                  <Link href={link.href} className="text-sm text-[#A0A0A0] hover:text-white transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+              {FOOTER_LINKS.servicos.slice(0, 3).map(link => (
+                <li key={link.href}>
+                  <Link href={link.href} className="text-sm text-[#A0A0A0] hover:text-white transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -100,95 +85,63 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Serviços */}
+          {/* Contact column */}
           <div>
-            <h4 className="font-semibold text-sm uppercase tracking-wider text-gray-300 mb-4">
-              Serviços
-            </h4>
-            <ul className="space-y-2.5">
-              {FOOTER_LINKS.servicos.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-gray-400 text-sm hover:text-[#C8980C] transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contacto */}
-          <div>
-            <h4 className="font-semibold text-sm uppercase tracking-wider text-gray-300 mb-4">
-              Contacto
-            </h4>
+            <h3 className="font-semibold text-sm uppercase tracking-wider text-[#C8980C] mb-4">Contacto</h3>
             <ul className="space-y-3">
               <li>
-                <a
-                  href={`tel:${CONTACT_PHONE}`}
-                  className="flex items-start gap-2.5 text-gray-400 text-sm hover:text-[#C8980C] transition-colors"
-                >
-                  <Phone size={14} className="mt-0.5 shrink-0" />
-                  {CONTACT_PHONE}
+                <a href={`tel:${CONTACT_PHONE}`} className="flex items-start gap-2.5 text-sm text-[#A0A0A0] hover:text-white transition-colors">
+                  <Phone size={15} className="text-[#C8980C] mt-0.5 shrink-0" />
+                  {CONTACT_PHONE_DISPLAY}
                 </a>
               </li>
               <li>
-                <a
-                  href={`mailto:${CONTACT_EMAIL}`}
-                  className="flex items-start gap-2.5 text-gray-400 text-sm hover:text-[#C8980C] transition-colors"
-                >
-                  <Mail size={14} className="mt-0.5 shrink-0" />
+                <a href={`mailto:${CONTACT_EMAIL}`} className="flex items-start gap-2.5 text-sm text-[#A0A0A0] hover:text-white transition-colors">
+                  <Mail size={15} className="text-[#C8980C] mt-0.5 shrink-0" />
                   {CONTACT_EMAIL}
                 </a>
               </li>
               <li>
-                <span className="flex items-start gap-2.5 text-gray-400 text-sm">
-                  <MapPin size={14} className="mt-0.5 shrink-0" />
+                <a
+                  href={`https://maps.google.com/?q=${encodeURIComponent(CONTACT_ADDRESS)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-2.5 text-sm text-[#A0A0A0] hover:text-white transition-colors"
+                >
+                  <MapPin size={15} className="text-[#C8980C] mt-0.5 shrink-0" />
                   {CONTACT_ADDRESS}
-                </span>
+                </a>
               </li>
               <li className="pt-1">
-                {OPENING_HOURS.map((h) => (
-                  <span key={h.days} className="flex items-start gap-2.5 text-gray-400 text-xs leading-relaxed">
-                    <Clock size={12} className="mt-0.5 shrink-0" />
-                    {h.days}: {h.hours}
-                  </span>
-                ))}
+                <div className="flex items-start gap-2.5">
+                  <Clock size={15} className="text-[#C8980C] mt-0.5 shrink-0" />
+                  <div className="text-sm text-[#A0A0A0] space-y-0.5">
+                    {OPENING_HOURS.map(h => (
+                      <div key={h.days}>
+                        <span className="text-white/70">{h.days}:</span>{" "}
+                        <span>{h.hours}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </li>
             </ul>
           </div>
         </div>
       </div>
 
-      {/* Bottom */}
+      {/* Bottom bar */}
       <div className="border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-gray-500 text-xs">
-            © {currentYear} Tecnolareiras. Todos os direitos reservados.
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-xs text-[#737373]">
+            © {year} Tecnolareiras — Recuperadores e Climatização Lda. Todos os direitos reservados.
           </p>
-          <div className="flex flex-wrap gap-4">
-            {FOOTER_LINKS.legal.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-gray-500 text-xs hover:text-[#C8980C] transition-colors"
-              >
+          <div className="flex items-center gap-4">
+            {FOOTER_LINKS.legal.map(link => (
+              <Link key={link.href} href={link.href} className="text-xs text-[#737373] hover:text-[#A0A0A0] transition-colors">
                 {link.label}
               </Link>
             ))}
-          </div>
-          <div className="flex items-center gap-2 text-gray-500 text-xs">
-            <span>Membro da</span>
-            <a
-              href="https://www.livroreclamacoes.pt"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-[#C8980C] transition-colors"
-            >
-              Livro de Reclamações Eletrónico
-            </a>
           </div>
         </div>
       </div>

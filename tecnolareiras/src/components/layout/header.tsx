@@ -1,201 +1,121 @@
 "use client";
-
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, Phone, ShoppingCart, User, Search, ChevronDown } from "lucide-react";
-import { NAV_LINKS, CONTACT_PHONE, CONTACT_PHONE_DISPLAY } from "@/lib/constants";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { ShoppingCart, Menu, X, Phone, Flame } from "lucide-react";
 import { useCart } from "@/context/cart-context";
+import { CONTACT_PHONE, CONTACT_PHONE_DISPLAY } from "@/lib/constants";
 
-const PRODUCT_MENU = [
-  { label: "Recuperadores de Calor", href: "/produtos/recuperadores-de-calor" },
-  { label: "Salamandras a Lenha", href: "/produtos/salamandras-a-lenha" },
-  { label: "Salamandras a Pellets", href: "/produtos/salamandras-a-pellets" },
-  { label: "Lareiras", href: "/produtos/lareiras" },
-  { label: "Lareiras Suspensas", href: "/produtos/lareiras-suspensas" },
-  { label: "Churrasqueiras", href: "/produtos/churrasqueiras" },
-  { label: "Tubagens", href: "/produtos/tubagens" },
-  { label: "Acessórios", href: "/produtos/acessorios" },
+const NAV = [
+  { label: "Produtos", href: "/produtos" },
+  { label: "Marcas", href: "/marcas" },
+  { label: "Serviços", href: "/servicos" },
+  { label: "Empresa", href: "/empresa" },
+  { label: "Contactos", href: "/contactos" },
 ];
 
 export function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [productMenuOpen, setProductMenuOpen] = useState(false);
   const { itemCount, openCart } = useCart();
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const handler = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", handler);
+    return () => window.removeEventListener("scroll", handler);
   }, []);
 
   return (
-    <>
-      {/* Top bar */}
-      <div className="bg-[#111111] text-white text-xs py-2 hidden md:block">
-        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-          <span>Especialistas em recuperadores, salamandras e climatização · Entroncamento</span>
-          <div className="flex items-center gap-4">
-            <Link
-              href={`tel:${CONTACT_PHONE}`}
-              className="flex items-center gap-1 hover:text-[#C8980C] transition-colors"
-            >
-              <Phone size={12} />
+    <header className={`sticky top-0 z-50 bg-white transition-shadow duration-200 ${scrolled ? "shadow-md" : "border-b border-[#E5DDD0]"}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="flex items-center justify-between h-16 md:h-[72px]">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2 shrink-0">
+            <div className="w-8 h-8 bg-[#C8980C] rounded-lg flex items-center justify-center">
+              <Flame size={16} className="text-white" />
+            </div>
+            <span className="font-bold text-lg text-[#1C1C1C] tracking-tight">Tecnolareiras</span>
+          </Link>
+
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-1">
+            {NAV.map(n => (
+              <Link key={n.href} href={n.href} className="px-4 py-2 text-sm font-medium text-[#737373] hover:text-[#1C1C1C] hover:bg-[#F7F2EA] rounded-lg transition-colors">
+                {n.label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Desktop Right */}
+          <div className="hidden md:flex items-center gap-3">
+            <a href={`tel:${CONTACT_PHONE}`} className="flex items-center gap-1.5 text-sm font-medium text-[#737373] hover:text-[#C8980C] transition-colors">
+              <Phone size={14} />
               {CONTACT_PHONE_DISPLAY}
+            </a>
+            <button onClick={openCart} className="relative p-2 hover:bg-[#F7F2EA] rounded-lg transition-colors">
+              <ShoppingCart size={20} className="text-[#1C1C1C]" />
+              {itemCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#C8980C] text-white text-xs font-bold rounded-full flex items-center justify-center">
+                  {itemCount}
+                </span>
+              )}
+            </button>
+            <Link href="/pedir-orcamento" className="px-4 py-2 bg-[#C8980C] text-white text-sm font-semibold rounded-lg hover:bg-[#A67A09] transition-colors">
+              Orçamento
             </Link>
-            <Link href="/assistencia" className="hover:text-[#C8980C] transition-colors">
-              Assistência Técnica
-            </Link>
+          </div>
+
+          {/* Mobile Right */}
+          <div className="flex md:hidden items-center gap-2">
+            <button onClick={openCart} className="relative p-2">
+              <ShoppingCart size={20} className="text-[#1C1C1C]" />
+              {itemCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#C8980C] text-white text-xs font-bold rounded-full flex items-center justify-center">
+                  {itemCount}
+                </span>
+              )}
+            </button>
+            <button onClick={() => setOpen(true)} className="p-2">
+              <Menu size={22} className="text-[#1C1C1C]" />
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Main header */}
-      <header
-        className={cn(
-          "sticky top-0 z-50 transition-all duration-300",
-          isScrolled
-            ? "bg-white/95 backdrop-blur-md shadow-md border-b border-gray-100"
-            : "bg-white border-b border-gray-100"
-        )}
-      >
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 flex-shrink-0">
-                <circle cx="20" cy="20" r="20" fill="#CC3300"/>
-                <text x="20" y="26" textAnchor="middle" fill="white" fontSize="14" fontWeight="800" fontFamily="Arial, sans-serif">TL</text>
-              </svg>
-              <div className="hidden sm:flex flex-col leading-none gap-0.5">
-                <span className="font-black text-[17px] text-[#111111] tracking-tight uppercase">Tecnolareiras</span>
-                <span className="text-[9px] text-[#C8980C] font-bold tracking-[0.15em] uppercase">Aquecimento Premium</span>
-              </div>
-            </Link>
-
-            {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-1">
-              {NAV_LINKS.map((link) => {
-                if (link.label === "Produtos") {
-                  return (
-                    <div
-                      key={link.label}
-                      className="relative"
-                      onMouseEnter={() => setProductMenuOpen(true)}
-                      onMouseLeave={() => setProductMenuOpen(false)}
-                    >
-                      <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#C8980C] transition-colors rounded-md hover:bg-gray-50 cursor-pointer">
-                        {link.label}
-                        <ChevronDown
-                          size={14}
-                          className={cn("transition-transform", productMenuOpen && "rotate-180")}
-                        />
-                      </button>
-                      {productMenuOpen && (
-                        <div className="absolute top-full left-0 mt-1 w-64 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50">
-                          {PRODUCT_MENU.map((item) => (
-                            <Link
-                              key={item.href}
-                              href={item.href}
-                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#C8980C] transition-colors"
-                            >
-                              {item.label}
-                            </Link>
-                          ))}
-                          <div className="border-t border-gray-100 mt-2 pt-2">
-                            <Link
-                              href="/produtos"
-                              className="block px-4 py-2 text-sm font-medium text-[#C8980C] hover:bg-gray-50 transition-colors"
-                            >
-                              Ver todos os produtos →
-                            </Link>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                }
-                return (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#C8980C] transition-colors rounded-md hover:bg-gray-50"
-                  >
-                    {link.label}
-                  </Link>
-                );
-              })}
-            </nav>
-
-            {/* Actions */}
-            <div className="flex items-center gap-2">
-              <button className="p-2 text-gray-600 hover:text-[#C8980C] transition-colors hidden md:flex cursor-pointer">
-                <Search size={18} />
-              </button>
-              <Link
-                href="/area-cliente"
-                className="p-2 text-gray-600 hover:text-[#C8980C] transition-colors hidden md:flex"
-              >
-                <User size={18} />
+      {/* Mobile Menu Overlay */}
+      {open && (
+        <div className="fixed inset-0 z-50 flex">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setOpen(false)} />
+          <div className="ml-auto w-72 bg-white h-full flex flex-col relative">
+            <div className="flex items-center justify-between p-4 border-b border-[#E5DDD0]">
+              <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-2">
+                <div className="w-7 h-7 bg-[#C8980C] rounded-md flex items-center justify-center">
+                  <Flame size={14} className="text-white" />
+                </div>
+                <span className="font-bold text-[#1C1C1C]">Tecnolareiras</span>
               </Link>
-              <button
-                onClick={openCart}
-                className="p-2 text-gray-600 hover:text-[#C8980C] transition-colors relative hidden md:flex cursor-pointer"
-                aria-label="Abrir carrinho"
-              >
-                <ShoppingCart size={18} />
-                {itemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#C8980C] text-white text-xs rounded-full flex items-center justify-center font-bold">
-                    {itemCount > 9 ? "9+" : itemCount}
-                  </span>
-                )}
+              <button onClick={() => setOpen(false)} className="p-2 hover:bg-[#F7F2EA] rounded-lg">
+                <X size={20} />
               </button>
-              <Button variant="accent" size="sm" className="hidden lg:flex" asChild>
-                <Link href="/pedir-orcamento">Pedir Orçamento</Link>
-              </Button>
-              <button
-                className="p-2 text-gray-600 lg:hidden cursor-pointer"
-                onClick={() => setMobileOpen(!mobileOpen)}
-                aria-label="Menu"
-              >
-                {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-              </button>
+            </div>
+            <nav className="flex-1 p-4 space-y-1">
+              {NAV.map(n => (
+                <Link key={n.href} href={n.href} onClick={() => setOpen(false)} className="block px-4 py-3 text-base font-medium text-[#1C1C1C] hover:bg-[#F7F2EA] rounded-xl transition-colors">
+                  {n.label}
+                </Link>
+              ))}
+              <Link href="/pedir-orcamento" onClick={() => setOpen(false)} className="block px-4 py-3 text-base font-semibold text-[#C8980C] hover:bg-[#F7F2EA] rounded-xl transition-colors">
+                Pedir Orçamento
+              </Link>
+            </nav>
+            <div className="p-4 border-t border-[#E5DDD0] bg-[#F7F2EA]">
+              <a href={`tel:${CONTACT_PHONE}`} className="flex items-center gap-2 text-sm font-medium text-[#1C1C1C]">
+                <Phone size={16} className="text-[#C8980C]" />
+                {CONTACT_PHONE_DISPLAY}
+              </a>
             </div>
           </div>
         </div>
-
-        {/* Mobile Menu */}
-        {mobileOpen && (
-          <div className="lg:hidden bg-white border-t border-gray-100 shadow-lg">
-            <nav className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
-              {NAV_LINKS.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className="px-3 py-3 text-sm font-medium text-gray-700 hover:text-[#C8980C] border-b border-gray-50 transition-colors"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <div className="pt-3 flex flex-col gap-2">
-                <Button variant="accent" asChild>
-                  <Link href="/pedir-orcamento" onClick={() => setMobileOpen(false)}>
-                    Pedir Orçamento
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link href="/area-cliente" onClick={() => setMobileOpen(false)}>
-                    Área de Cliente
-                  </Link>
-                </Button>
-              </div>
-            </nav>
-          </div>
-        )}
-      </header>
-    </>
+      )}
+    </header>
   );
 }
